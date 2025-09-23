@@ -6,7 +6,7 @@ def clean_plant_id(data) -> int:
     if not isinstance(data["plant_id"], int):
         raise ValueError("Invalid plant id type")
     
-    if data["plant_id"] < 0:
+    if data["plant_id"] <= 0:
         raise ValueError("Invalid plant id")
     
     return data["plant_id"]
@@ -32,12 +32,6 @@ def clean_temperature(data) -> float:
 
 def clean_origin_location(data) -> dict:
     """Clean origin location."""
-    if not isinstance(data["origin_location"]["latitude"], float):
-        raise ValueError("Invalid latitude value")
-    
-    if not isinstance(data["origin_location"]["longitude"], float):
-        raise ValueError("Invalid longitude value")
-    
     if not isinstance(data["origin_location"]["city"], str):
         raise ValueError("Invalid city value")
     
@@ -52,8 +46,6 @@ def clean_origin_location(data) -> dict:
     data["origin_location"]["country"] = data["origin_location"]["country"].strip().title()
 
     return {
-        "latitude": data["origin_location"]["latitude"],
-        "longitude": data["origin_location"]["longitude"],
         "city": data["origin_location"]["city"],
         "country": data["origin_location"]["country"],
     }
@@ -81,7 +73,7 @@ def clean_last_watered(data) -> datetime:
     if not isinstance(data["last_watered"], str):
         raise ValueError("Invalid last watered value")
     
-    data["last_watered"] = datetime.fromisoformat(data["last_watered"].replace("Z", "+00:00"))
+    data["last_watered"] = datetime.fromisoformat(data["last_watered"])
 
     return data["last_watered"]
 
@@ -100,8 +92,7 @@ def clean_recording_taken(data) -> datetime:
     if not isinstance(data["recording_taken"], str):
         raise ValueError("Invalid recording taken value")
 
-    data["recording_taken"] = datetime.fromisoformat(
-        data["recording_taken"].replace("Z", "+00:00"))
+    data["recording_taken"] = datetime.fromisoformat(data["recording_taken"])
 
     return data["recording_taken"]
 
@@ -143,5 +134,3 @@ if __name__ == "__main__":
             "Heliconia schiedeana 'Fire and Ice'"
         ]
     }
-
-    
