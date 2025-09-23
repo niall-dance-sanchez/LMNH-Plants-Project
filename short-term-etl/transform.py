@@ -24,7 +24,7 @@ def clean_temperature(data) -> float:
     if not isinstance(data["temperature"], float):
         raise ValueError("Invalid temperature type")
     
-    if not (-10 <= data["temperature"] <= 50):
+    if not (-10 <= data["temperature"] <= 60):
         raise ValueError("Invalid temperature value")
     
     return data["temperature"]
@@ -37,9 +37,6 @@ def clean_origin_location(data) -> dict:
     
     if not isinstance(data["origin_location"]["country"], str):
         raise ValueError("Invalid country value")
-    
-    if not (-90 <= data["origin_location"]["latitude"] <= 90 and -180 <= data["origin_location"]["longitude"] <= 180):
-        raise ValueError(f"Invalid latitude and longitude")
     
     data["origin_location"]["city"] = data["origin_location"]["city"].strip().title()
 
@@ -82,7 +79,7 @@ def clean_soil_moisture(data) -> float:
     if not isinstance(data["soil_moisture"], float):
         raise ValueError("Invalid soil moisture value")
     
-    if not (-10 <= data["soil_moisture"] <= 50):
+    if not (0 <= data["soil_moisture"] <= 100):
         raise ValueError("Invalid soil moisture value")
     
     return data["soil_moisture"]
