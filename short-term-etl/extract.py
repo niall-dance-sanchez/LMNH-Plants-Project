@@ -1,11 +1,12 @@
 """Script with functions that extract the plant data from the API."""
 
-import aiohttp
 import asyncio
+import aiohttp
 
 
 async def get_plant_data(session, url):
     """Fetches the plant data from the API with the url provided."""
+
     async with session.get(url) as response:
         if response.status == 200:
             content = await response.json()
@@ -14,14 +15,14 @@ async def get_plant_data(session, url):
             # No plant found, so return None
             return None
         if response.status == 500:
-            return get_plant_data(url, session)
+            return get_plant_data(session, url)
 
 
 async def get_batch_plant_data(start_id: int, end_id: int) -> list[dict]:
     """Gets a batch of plant data between the provided plant ids."""
 
-    urls = [
-        f"https://sigma-labs-bot.herokuapp.com/api/plants/{i}" for i in range(start_id, end_id)]
+    urls = [f"https://sigma-labs-bot.herokuapp.com/api/plants/{i}"
+            for i in range(start_id, end_id)]
 
     async with aiohttp.ClientSession() as session:
         tasks = [get_plant_data(session, url) for url in urls]
