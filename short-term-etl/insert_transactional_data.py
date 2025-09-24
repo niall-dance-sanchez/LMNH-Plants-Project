@@ -17,13 +17,8 @@ def get_connection() -> pyodbc.Connection:
 
 def get_reading_tuples(data: list[dict]) -> list[tuple]:
     """
-    Takes a list of transformed data, and returns a list of tuples
-    containing data about each reading transaction.
-    Args:
-        data (list[dict]): Data list returned from transform stage.
-
-    Returns:
-        list[tuple]: reading data as tuples.
+    Takes a list of data from the transform stage, and returns
+    a list of tuples containing data about each reading transaction.
     """
     readings = []
     for record in data:
