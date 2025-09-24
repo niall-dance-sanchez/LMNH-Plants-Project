@@ -49,6 +49,7 @@ resource "aws_glue_catalog_database" "c19_ajldka_glue_catalog_database_lmnh_plan
 
 resource "aws_glue_crawler" "c19_ajldka_glue_crawler_lmnh_plants" {
   database_name = aws_glue_catalog_database.c19_ajldka_glue_catalog_database_lmnh_plants.name
+  schedule      = "cron(5 0 * * ? *)"
   name          = "c19-ajldka-lmnh-plants-db"
   role          = aws_iam_role.c19_ajldka_glue_role_lmnh_plants.arn
 
