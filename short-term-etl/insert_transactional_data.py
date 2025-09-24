@@ -55,11 +55,39 @@ def insert_transactional_data(data: list[dict], con: pyodbc.Connection) -> None:
 
 
 if __name__ == "__main__":
-    load_dotenv()
-    conn = get_connection()
-    with conn.cursor() as cur:
-        q = "SELECT table_name, table_schema FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE';"
-        cur.execute(q)
-        data = cur.fetchone()
-    print(data)
-    conn.close()
+    dummy_data = [
+        {
+            'plant_id': 8,
+            'name': 'Bird of paradise',
+            'temperature': 16.3483444707664,
+            'origin_location': {
+                'city': 'Edwardfurt',
+                'country': 'Liberia'
+            },
+            'botanist': {
+                'name': 'Bradford Mitchell Dvm',
+                'email': 'bradford.mitchell.dvm@lnhm.co.uk'
+            },
+            'last_watered': "2025-9-22 13:33:20",
+            'soil_moisture': 31.7511122641509,
+            'recording_taken': "2025-9-23 09:39:03"
+        },
+        {
+            'plant_id': 5,
+            'name': 'Flowery flower',
+            'temperature': 44.3483444707664,
+            'origin_location': {
+                'city': 'Edwardfurt',
+                'country': 'Liberia'
+            },
+            'botanist': {
+                'name': 'Bradford Mitchell Dvm',
+                'email': 'bradford.mitchell.dvm@lnhm.co.uk'
+            },
+            'last_watered': "2025-9-19 13:33:20",
+            'soil_moisture': 51.7511122641509,
+            'recording_taken': "2025-9-21 09:39:03"
+        }
+    ]
+    # Check reading tuples are correct
+    print(get_reading_tuples(dummy_data))
