@@ -2,12 +2,13 @@
 
 from os import environ as ENV
 
-from dotenv import load_dotenv
 import pyodbc
 
 
 def get_connection() -> pyodbc.Connection:
     """Get connection to SQL Server DB."""
+    # TODO: Not sure if we'll need this here since a connection is likely
+    # to passed in by the main load function, but I'll leave it here for now
     conn_str = (f"DRIVER={{{ENV['DB_DRIVER']}}};SERVER={ENV['DB_HOST']};"
                 f"PORT={ENV['DB_PORT']};DATABASE={ENV['DB_NAME']};"
                 f"UID={ENV['DB_USER']};PWD={ENV['DB_PASSWORD']};Encrypt=no;")
