@@ -9,7 +9,7 @@ resource "aws_s3_bucket" "c19_ajldka_s3_lmnh_plants" {
     force_destroy = true
 }
 
-resource "aws_s3_bucket_versioning" "c19_lmnh_plants_versioning" {
+resource "aws_s3_bucket_versioning" "c19_ajldka_lmnh_plants_versioning" {
   bucket = aws_s3_bucket.c19_ajldka_s3_lmnh_plants.id
   versioning_configuration {
     status = "Disabled"
