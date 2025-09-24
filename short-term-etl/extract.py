@@ -4,7 +4,7 @@ from asyncio import run, gather
 from aiohttp import ClientSession
 
 
-async def get_plant_data(session, url):
+async def get_plant_data(session, url: str) -> dict | None:
     """Fetches the plant data from the API with the url provided."""
 
     searching = True
@@ -59,7 +59,3 @@ def extract_all_plant_data(batch_size: int = 10) -> list[list]:
             i += 1
 
     return [p for p in plant_data if p]
-
-
-if __name__ == "__main__":
-    print(extract_all_plant_data())
