@@ -4,13 +4,13 @@ provider "aws" {
     secret_key = var.AWS_SECRET_ACCESS_KEY
 }
 
-resource "aws_s3_bucket" "c19_ajldka_lmnh_plants" {
+resource "aws_s3_bucket" "c19_ajldka_s3_lmnh_plants" {
     bucket = "c19-ajldka-lmnh-plants"
     force_destroy = true
 }
 
 resource "aws_s3_bucket_versioning" "c19_lmnh_plants_versioning" {
-  bucket = aws_s3_bucket.c19_ajldka_lmnh_plants.id
+  bucket = aws_s3_bucket.c19_ajldka_s3_lmnh_plants.id
   versioning_configuration {
     status = "Disabled"
   }
