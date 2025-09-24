@@ -15,3 +15,8 @@ resource "aws_s3_bucket_versioning" "c19_ajldka_lmnh_plants_versioning" {
     status = "Disabled"
   }
 }
+
+resource "aws_ecr_repository" "c19_ajldka_ecr_lmnh_plants" {
+  name                 = "c19-ajldka-lmnh-plants"
+  image_tag_mutability = "MUTABLE"
+}
