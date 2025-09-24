@@ -24,7 +24,7 @@ jobs:
         pip install -r requirements.py
     - name: Run pylint
       run: |
-        pylint --fail-under 9 *.py
+        pylint $(find . -name "*.py") --fail-under 9.0
   
   test:
     runs-on: ubuntu-latest
@@ -43,4 +43,4 @@ jobs:
         pip install -r [requirements file path]
     - name: Run tests
       run: |
-        pytest test_*.py
+        pytest $(find . -name "test_*.py")
