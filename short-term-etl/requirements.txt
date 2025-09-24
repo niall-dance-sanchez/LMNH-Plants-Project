@@ -1,1 +1,3 @@
 pylint
+python-dotenv
+pyodbc
