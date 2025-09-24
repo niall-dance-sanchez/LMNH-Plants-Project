@@ -1,13 +1,15 @@
 """
+Script with functions to connect to the RDS and 
+extract all of it's data into a single table.
 """
 
 from os import environ as ENV
 
-from dotenv import load_dotenv
 import pyodbc
 
 
 def get_db_connection():
+    """Connect to the plant database hosted on RDS."""
 
     conn_str = (f"DRIVER={{{ENV['DB_DRIVER']}}};SERVER={ENV['DB_HOST']};"
                 f"PORT={ENV['DB_PORT']};DATABASE={ENV['DB_NAME']};"
@@ -16,13 +18,21 @@ def get_db_connection():
     return pyodbc.connect(conn_str)
 
 
-if __name__ == "__main__":
-    load_dotenv()
+def extract_day_of_data(con):
+    """Extract all plant data from the RDS."""
 
-    with get_db_connection() as conn:
-        with conn.cursor() as cur:
-            query = "SELECT table_name, table_schema FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE';"
-            cur.execute(query)
-            data = cur.fetchone()
+    with con.cursor() as cur:
+        query = """
+                SELECT * 
+                FROM delta.plant
+                JOIN delta.species ON delta.plant.species_id = delta.species.species_id
+                JOIN delta.country ON delta.plant.country_id = delta.country.country_id
+                JOIN delta.city ON delta.plant.city_id = delta.city.city_id
+                JOIN delta.reading ON delta.plant.plant_id = delta.reading.plant_id
+                JOIN delta.botanist ON delta.plant.botanist_id = delta.botanist.botanist_id
+                ;
+                """
+        cur.execute(query)
+        data = cur.fetchall()
 
-    print(data)
+    return data
