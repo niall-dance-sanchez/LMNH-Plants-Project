@@ -1,2 +1,3 @@
 pylint
 aiohttp
+pyodbc
