@@ -1,21 +1,26 @@
 """Script with functions that extract the plant data from the API."""
 
-import asyncio
-import aiohttp
+from asyncio import run, gather
+from aiohttp import ClientSession
 
 
 async def get_plant_data(session, url):
     """Fetches the plant data from the API with the url provided."""
 
-    async with session.get(url) as response:
-        if response.status == 200:
-            content = await response.json()
-            return content
-        if response.status == 404:
-            # No plant found, so return None
-            return None
-        if response.status == 500:
-            return get_plant_data(session, url)
+    searching = True
+
+    # Keep pinging the API until the raspberry pi works
+    while searching:
+        response = await session.request('GET', url=url)
+        if response.status != 500:
+            searching = False
+
+    if response.status == 200:
+        content = await response.json()
+        return content
+
+    # No plant found, so return None
+    return None
 
 
 async def get_batch_plant_data(start_id: int, end_id: int) -> list[dict]:
@@ -24,9 +29,9 @@ async def get_batch_plant_data(start_id: int, end_id: int) -> list[dict]:
     urls = [f"https://sigma-labs-bot.herokuapp.com/api/plants/{i}"
             for i in range(start_id, end_id)]
 
-    async with aiohttp.ClientSession() as session:
+    async with ClientSession() as session:
         tasks = [get_plant_data(session, url) for url in urls]
-        responses = await asyncio.gather(*tasks)
+        responses = await gather(*tasks)
 
     return responses
 
@@ -45,7 +50,7 @@ def extract_all_plant_data(batch_size: int = 10) -> list[list]:
         start = batch_size*i + 1
         end = batch_size*(i+1) + 1
 
-        plants = asyncio.run(get_batch_plant_data(start, end))
+        plants = run(get_batch_plant_data(start, end))
 
         if not any(plants):
             plants_exist = False
@@ -53,10 +58,8 @@ def extract_all_plant_data(batch_size: int = 10) -> list[list]:
             plant_data.extend(plants)
             i += 1
 
-    return plant_data
-
-
-def filter_plant_data(plant_data: list[dict]) -> list[dict]:
-    """Returns the plant data with any None values removed."""
-
     return [p for p in plant_data if p]
+
+
+if __name__ == "__main__":
+    print(extract_all_plant_data())
