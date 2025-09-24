@@ -1,24 +1,24 @@
 CREATE TABLE delta.country (
     country_id int IDENTITY(1,1) PRIMARY KEY,
-    country_name varchar
+    country_name varchar(255) UNIQUE
 )
 GO
 
 CREATE TABLE delta.city (
     city_id int IDENTITY(1,1) PRIMARY KEY,
-    city_name varchar
+    city_name varchar(255) UNIQUE
 )
 GO
 
 CREATE TABLE delta.species (
     species_id int IDENTITY(1,1) PRIMARY KEY,
-    species_name varchar
+    species_name varchar(255) UNIQUE
 )
 
 CREATE TABLE delta.botanist (
     botanist_id int IDENTITY(1,1) PRIMARY KEY,
     botanist_name, varchar
-    email varchar
+    email varchar UNIQUE
 )
 GO
 
