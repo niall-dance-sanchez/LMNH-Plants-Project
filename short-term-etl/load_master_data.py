@@ -56,7 +56,7 @@ def check_country_exists_in_country_table(conn: pyodbc.Connection, country_name:
         cur.execute(query)
         country_id = cur.fetchone()
 
-    return country_id
+    return country_id[0] if country_id is not None else None
 
 
 def check_city_exists_in_city_table(conn: pyodbc.Connection, city_name: str) -> int:
