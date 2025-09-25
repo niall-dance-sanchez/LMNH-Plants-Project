@@ -9,6 +9,8 @@ import boto3
 from extract import get_db_connection, extract_day_of_data
 from summarise import create_summary
 
+BUCKET = "c19-ajldka-lmnh-plants"
+
 
 def get_s3_connection():
     """Connect to the plant data S3 bucket."""
@@ -19,14 +21,24 @@ def get_s3_connection():
     )
 
 
-def upload_summary_to_s3(df: pd.DataFrame, path: str, boto_sess):
+def create_previous_day_parquet_file_path(bucket: str):
+
+    yesterday = datetime.now() - timedelta(days=1)
+    year = yesterday.year
+    month = f"{yesterday.month:02d}"
+    day = f"{yesterday.day:02d}"
+
+    return f"s3://{bucket}/input/year={year}/month={month}/day={day}/plants_summary.parquet"
+
+
+def upload_summary_to_s3(df: pd.DataFrame, path: str, boto_session):
     """Upload summary data to S3 bucket."""
+
     wr.s3.to_parquet(
         df=df,
         path=path,
         dataset=False,
-        mode="append",
-        boto3_session=boto_sess
+        boto3_session=boto_session
     )
 
 
@@ -38,20 +50,12 @@ if __name__ == "__main__":
     conn = get_db_connection()
 
     # extract
-    with conn.cursor() as cur:
-        plant_data = extract_day_of_data(conn)
+    plant_data = extract_day_of_data(conn)
 
     # transform
     plant_df = create_summary(plant_data)
 
-    # yesterday's date
-    yesterday = datetime.now() - timedelta(days=1)
-    year = yesterday.year
-    month = f"{yesterday.month:02d}"
-    day = f"{yesterday.day:02d}"
-
-    BUCKET = "c19-ajldka-lmnh-plants"
-    S3_PATH = f"s3://{BUCKET}/input/year={year}/month={month}/day={day}/plants_summary.parquet"
+    file_path = create_previous_day_parquet_file_path(BUCKET)
 
     # load
-    upload_summary_to_s3(plant_df, S3_PATH, boto_session)
+    upload_summary_to_s3(plant_df, file_path, boto_session)
