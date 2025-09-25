@@ -179,12 +179,6 @@ def single_load(conn: pyodbc.Connection, data: dict):
         conn, plant_id, species_id, country_id, city_id, botanist_id)
 
 
-def check_max_plant_id(data: list[dict]) -> int:
-    """Checks the maximum plant id found in a list of dictionaries 
-    and returns the value as in integer."""
-    return max(data, key=lambda x: x["plant_id"])["plant_id"]
-
-
 def return_plant_ids_in_rds(conn: pyodbc.Connection) -> list[int]:
     """Returns a list of all plant IDs currently in the SQL server."""
     with conn.cursor() as cur:
