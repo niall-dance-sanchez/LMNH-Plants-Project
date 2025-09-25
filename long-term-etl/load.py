@@ -22,6 +22,10 @@ def get_s3_connection():
 
 
 def create_previous_day_parquet_file_path(bucket: str):
+    """
+    Create a file path with the previous day's date 
+    to be uploaded as a parquet file to the S3 bucket. 
+    """
 
     yesterday = datetime.now() - timedelta(days=1)
     year = yesterday.year
@@ -43,7 +47,7 @@ def upload_summary_to_s3(df: pd.DataFrame, path: str, boto_session):
 
 
 def handler(event=None, context=None) -> dict:
-    """Main Lambda handler function."""
+    """Main long-term ETL handler function."""
 
     load_dotenv()
 
