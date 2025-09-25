@@ -8,10 +8,6 @@ from os import environ as ENV
 import pyodbc
 
 
-from dotenv import load_dotenv
-import pandas as pd
-
-
 def get_db_connection():
     """Connect to the plant database hosted on RDS."""
 
