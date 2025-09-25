@@ -58,7 +58,8 @@ def check_city_exists_in_city_table(conn: pyodbc.Connection, city_name: str) -> 
     return city_id[0] if city_id is not None else None
 
 
-def check_botanist_exists_in_botanist_table(conn: pyodbc.Connection, botanist_email: str) -> int | None:
+def check_botanist_exists_in_botanist_table(
+        conn: pyodbc.Connection, botanist_email: str) -> int | None:
     """Returns the botanist_id if the botanist_email already exists in the table."""
     with conn.cursor() as cur:
         query = f"""
@@ -122,7 +123,8 @@ def insert_city_into_city_table(conn: pyodbc.Connection, city_name: str) -> int:
     return new_id
 
 
-def insert_botanist_into_botanist_table(conn: pyodbc.Connection, botanist_name: str, botanist_email: str) -> int:
+def insert_botanist_into_botanist_table(
+        conn: pyodbc.Connection, botanist_name: str, botanist_email: str) -> int:
     """Inserts data into the botanist table."""
     with conn.cursor() as cur:
         query = """
@@ -139,7 +141,9 @@ def insert_botanist_into_botanist_table(conn: pyodbc.Connection, botanist_name: 
     return new_id
 
 
-def insert_plant_into_plant_table(conn: pyodbc.Connection, plant_id: int, species_id: int, country_id: int, city_id: int, botanist_id: int):
+def insert_plant_into_plant_table(
+        conn: pyodbc.Connection, plant_id: int, species_id: int,
+        country_id: int, city_id: int, botanist_id: int):
     """Inserts data into the plant table."""
     with conn.cursor() as cur:
         query = """
@@ -162,12 +166,12 @@ def single_load(conn: pyodbc.Connection, data: dict):
     if not species_id:
         species_id = insert_species_into_species_table(conn, data["name"])
 
-    country_id = check_country_exists_in_country_table(conn, data["origin_location"]["country"]) 
+    country_id = check_country_exists_in_country_table(conn, data["origin_location"]["country"])
     if not country_id:
         country_id = insert_country_into_country_table(conn, data["origin_location"]["country"])
 
     city_id = check_city_exists_in_city_table(conn, data["origin_location"]["city"])
-    if not city_id:    
+    if not city_id:
         city_id = insert_city_into_city_table(conn, data["origin_location"]["city"])
 
     botanist_id = check_botanist_exists_in_botanist_table(conn, data["botanist"]["email"])
