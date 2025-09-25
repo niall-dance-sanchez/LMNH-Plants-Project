@@ -179,23 +179,23 @@ def single_load(conn: pyodbc.Connection, data: dict):
         conn, plant_id, species_id, country_id, city_id, botanist_id)
 
 
-def check_max_plant_id(data: list[dict]) -> int:
-    """Checks the maximum plant id found in a list of dictionaries 
-    and returns the value as in integer."""
-    return max(data, key=lambda x: x["plant_id"])["plant_id"]
+def return_plant_ids_in_rds(conn: pyodbc.Connection) -> list[int]:
+    """Returns a list of all plant IDs currently in the SQL server."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT plant_id FROM plant")
+        plant_ids = cur.fetchall()
+    plant_ids = [row[0] for row in plant_ids]
+    return plant_ids
 
 
 def load_master_data(conn: pyodbc.Connection, data: list[dict]):
     """Loads all master data from the records passed in from the transform stage."""
-    with conn.cursor() as cur:
-        cur.execute("SELECT MAX(plant_id) FROM plant")
-        max_rds_plant_id = cur.fetchone()[0]
+    all_rds_plant_ids = return_plant_ids_in_rds(conn)
+    data = list(filter(lambda r: r["plant_id"] not in all_rds_plant_ids, data))
 
-    if max_rds_plant_id >= check_max_plant_id(data):
+    if len(data) == 0:
         # No new master data
         return
-
-    data = list(filter(lambda r: r["plant_id"] > max_rds_plant_id, data))
 
     for record in data:
         single_load(conn, data=record)
