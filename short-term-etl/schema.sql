@@ -31,7 +31,7 @@ CREATE TABLE delta.species (
 CREATE TABLE delta.botanist (
     botanist_id int IDENTITY(1,1) PRIMARY KEY,
     botanist_name varchar,
-    email varchar UNIQUE
+    botanist_email varchar UNIQUE
 )
 GO
 
