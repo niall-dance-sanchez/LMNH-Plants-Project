@@ -87,7 +87,7 @@ resource "aws_iam_role" "c19_ajldka_lambda_rds_etl_role_lmnh_plants" {
 }
 
 resource "aws_iam_role_policy_attachment" "c19_ajldka_rds_etl_role_attach_lmnh_plants" {
-  role       = aws_iam_role.c19_ajldka_lambda_s3_rds_role_lmnh_plants.name
+  role       = aws_iam_role.c19_ajldka_lambda_rds_etl_role_lmnh_plants.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
