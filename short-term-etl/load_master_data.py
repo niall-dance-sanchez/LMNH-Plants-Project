@@ -119,7 +119,7 @@ def insert_city_into_city_table(conn: pyodbc.Connection, city_name: str):
     """Inserts data into the city table."""
     with conn.cursor() as cur:
         query = f"""
-                INSERT INTO delta.country
+                INSERT INTO delta.city
                     (city_name)
                 OUTPUT INSERTED.city_id
                 VALUES
