@@ -21,7 +21,7 @@ def get_db_connection():
 def check_max_plant_id(data: list[dict]) -> int:
     """Checks the maximum plant id found in a list of dictionaries 
     and returns the value as in integer."""
-    return int(data[-1]["plant_id"])
+    return max(data, key=lambda x: x["plant_id"])
 
 
 def has_new_data(transformed_data: list[dict], rds_data: list[dict]) -> bool:
