@@ -16,7 +16,8 @@ def get_s3_connection():
         aws_access_key_id=getenv("AWS_ACCESS_KEY"),
         aws_secret_access_key=getenv("AWS_SECRET_ACCESS_KEY"),
         region_name=getenv("AWS_REGION")
-)
+    )
+
 
 def upload_summary_to_s3(df: pd.DataFrame, path: str, boto_sess):
     """Upload summary data to S3 bucket."""
@@ -28,6 +29,7 @@ def upload_summary_to_s3(df: pd.DataFrame, path: str, boto_sess):
         boto3_session=boto_sess
     )
 
+
 if __name__ == "__main__":
     load_dotenv()
 
@@ -37,8 +39,7 @@ if __name__ == "__main__":
 
     # extract
     with conn.cursor() as cur:
-        rows = extract_day_of_data(conn)
-        plant_data = [dict(zip([col[0] for col in cur.description], row)) for row in rows]
+        plant_data = extract_day_of_data(conn)
 
     # transform
     plant_df = create_summary(plant_data)

@@ -8,6 +8,10 @@ from os import environ as ENV
 import pyodbc
 
 
+from dotenv import load_dotenv
+import pandas as pd
+
+
 def get_db_connection():
     """Connect to the plant database hosted on RDS."""
 
@@ -19,11 +23,21 @@ def get_db_connection():
 
 
 def extract_day_of_data(con):
-    """Extract all plant data from the RDS."""
+    """Extract all relevant (dropping unnecessary ids) plant data from the RDS."""
 
     with con.cursor() as cur:
         query = """
-                SELECT * 
+                SELECT 
+                    delta.plant.plant_id,
+                    delta.species.species_name,
+                    delta.country.country_name,
+                    delta.city.city_name,
+                    delta.reading.temperature,
+                    delta.reading.soil_moisture,
+                    delta.reading.last_watered,
+                    delta.reading.recording_taken,
+                    delta.botanist.botanist_name,
+                    delta.botanist.botanist_email
                 FROM delta.plant
                 JOIN delta.species ON delta.plant.species_id = delta.species.species_id
                 JOIN delta.country ON delta.plant.country_id = delta.country.country_id
@@ -33,6 +47,9 @@ def extract_day_of_data(con):
                 ;
                 """
         cur.execute(query)
-        data = cur.fetchall()
+        desc = cur.description
+        column_names = [col[0] for col in desc]
+        data = [dict(zip(column_names, row))
+                for row in cur.fetchall()]
 
     return data
