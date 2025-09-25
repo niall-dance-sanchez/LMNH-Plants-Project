@@ -4,11 +4,7 @@ import pyodbc
 from dotenv import load_dotenv
 
 from insert_transactional_data import insert_transactional_data
-
-
-def dummy_load_master_data(data: list[dict], con: pyodbc.Connection):
-    """Dummy function for the detection/insertion of new master data."""
-    pass
+from load_master_data import load_master_data
 
 
 def get_connection() -> pyodbc.Connection:
@@ -22,9 +18,9 @@ def get_connection() -> pyodbc.Connection:
 def load_cleaned_data(data: list[dict], con: pyodbc.Connection) -> None:
     """Completes the Load stage of the ETL using two helper scripts."""
     # Insert any new detected master data
-    dummy_load_master_data(data, con)
+    load_master_data(data=data, conn=con)
     # Insert the reading transaction data
-    insert_transactional_data(data, con)
+    insert_transactional_data(data=data, con=con)
 
 
 if __name__ == "__main__":
