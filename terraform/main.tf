@@ -86,6 +86,11 @@ resource "aws_iam_role" "c19_ajldka_lambda_rds_etl_role_lmnh_plants" {
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
+resource "aws_iam_role_policy_attachment" "c19_ajldka_rds_etl_role_attach_lmnh_plants" {
+  role       = aws_iam_role.c19_ajldka_lambda_s3_rds_role_lmnh_plants.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
 resource "aws_lambda_function" "c19_ajldka_lambda_function_lmnh_plants_rds_etl" {
   function_name = "c19-ajldka-lambda-rds-etl"
   role = aws_iam_role.c19_ajldka_lambda_rds_etl_role_lmnh_plants.arn
