@@ -21,6 +21,16 @@ resource "aws_ecr_repository" "c19_ajldka_ecr_lmnh_plants" {
   image_tag_mutability = "MUTABLE"
 }
 
+resource "aws_ecr_repository" "c19_ajldka_ecr_lmnh_plants_s3" {
+  name                 = "c19-ajldka-lmnh-plants-s3"
+  image_tag_mutability = "MUTABLE"
+}
+
+resource "aws_ecr_repository" "c19_ajldka_ecr_lmnh_plants_dashboard" {
+  name                 = "c19-ajldka-lmnh-plants-dashboard"
+  image_tag_mutability = "MUTABLE"
+}
+
 resource "aws_iam_role" "c19_ajldka_glue_role_lmnh_plants" {
   name = "c19-ajldka-glue-role-lmnh_plants"
 
