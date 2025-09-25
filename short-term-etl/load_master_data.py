@@ -31,7 +31,7 @@ def has_new_data(transformed_data: list[dict], rds_data: list[dict]) -> bool:
     return False 
 
 
-def check_species_exists_in_species_table(conn: pyodbc.Connection, species_name: str) -> int:
+def check_species_exists_in_species_table(conn: pyodbc.Connection, species_name: str) -> int | None:
     """Returns the species_id if the species_name already exists in the table."""
     with conn.cursor() as cur:
         query = f"""
