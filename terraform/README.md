@@ -7,8 +7,10 @@ These files are needed for all AWS resource creation.
 Add a `terraform.tfvars` file in this directory with your AWS access key and secret access key.
 
 ```
-AWS_ACCESS_KEY="[your_access_key]"
-AWS_SECRET_ACCESS_KEY="[your_secret_access_key]"
+AWS_ACCESS_KEY_AJLDKA="[your_access_key]"
+AWS_SECRET_ACCESS_KEY_AJLDKA="[your_secret_access_key]"
+
+
 ```
 
 ## Usage
