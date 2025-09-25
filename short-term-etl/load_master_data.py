@@ -66,7 +66,7 @@ def check_city_exists_in_city_table(conn: pyodbc.Connection, city_name: str) -> 
                 SELECT city_id
                 FROM delta.city
                 WHERE country_name = {city_name}
-                """
+                WHERE city_name = {city_name}
         cur.execute(query)
         city_id = cur.fetchone()
 
