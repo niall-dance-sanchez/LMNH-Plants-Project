@@ -1,0 +1,6 @@
+streamlit
+pandas
+pylint
+pytest
+boto3
+awswrangler
