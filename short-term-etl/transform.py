@@ -119,7 +119,10 @@ def clean_data(data: list[dict]) -> list[dict]:
     """Cleans each record in a list of data."""
     cleaned_data = []
     for record in data:
-        cleaned_data.append(clean_plants(record))
+        try:
+            cleaned_data.append(clean_plants(record))
+        except ValueError as e:
+            print(f"Record dropped because: {e}.")
     return cleaned_data
 
 
