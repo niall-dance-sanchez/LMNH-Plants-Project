@@ -1,3 +1,6 @@
 pylint
-aiohttp
+pytest
+python-dotenv
 pyodbc
+aiohttp
+
