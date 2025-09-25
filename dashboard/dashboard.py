@@ -24,7 +24,7 @@ def start_boto3_session():
 @st.cache_data
 def load_data_from_athena():
     """Function that loads data from the plants database using Athena."""
-    query = "SELECT * FROM plant JOIN SPECIES USING (species_id);" # Create big query for all data here
+    query = "SELECT * FROM plant;" # Create big query for all data here
     session = start_boto3_session()
 
     data = wr.athena.read_sql_query(
@@ -91,7 +91,7 @@ def all_plant_data_page():  # conn: Connection, live_plant_data: list[str]):
     """A secectable tab of the dashboard which shows all stored plant data."""
     # Page Title
     st.title("LMNH Botany Department Dashboard")
-    st.header("All Plant data")
+    st.header("All Plant Data")
 
     # PLACEHOLDER REPLACE WITH ACTUAL PLANT LIST
     plant_list = ["Aglaonema Commutatum", "Aloe Vera", "Amaryllis",
@@ -124,9 +124,9 @@ def all_plant_data_page():  # conn: Connection, live_plant_data: list[str]):
 if __name__ == "__main__":
     load_dotenv()
 
-    print(load_data_from_athena())
-    # create_sidebar()
-    # if st.session_state.page == "Live Data":
-    #     live_data_page()
-    # if st.session_state.page == "All Plant Data":
-    #     all_plant_data_page()
+    # print(load_data_from_athena())
+    create_sidebar()
+    if st.session_state.page == "Live Data":
+        live_data_page()
+    if st.session_state.page == "All Plant Data":
+        all_plant_data_page()

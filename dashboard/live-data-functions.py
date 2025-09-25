@@ -1,5 +1,5 @@
 """File containing the functions needed to create the figures 
-required for the LMNH dashboard."""
+required for the live data LMNH dashboard."""
 
 import datetime
 
