@@ -42,20 +42,18 @@ def upload_summary_to_s3(df: pd.DataFrame, path: str, boto_session):
     )
 
 
-if __name__ == "__main__":
+def handler(event=None, context=None) -> dict:
+    """Main Lambda handler function."""
+
     load_dotenv()
 
     boto_session = get_s3_connection()
-
     conn = get_db_connection()
 
-    # extract
     plant_data = extract_day_of_data(conn)
-
-    # transform
     plant_df = create_summary(plant_data)
-
     file_path = create_previous_day_parquet_file_path(BUCKET)
 
-    # load
     upload_summary_to_s3(plant_df, file_path, boto_session)
+
+    return {"statusCode": 200}
