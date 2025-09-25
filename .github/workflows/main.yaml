@@ -1,4 +1,4 @@
-name: Pylint Check
+name: Pylint and Pytest Workflow
 
 on:
   push:
@@ -24,7 +24,7 @@ jobs:
         find . -type f -name "requirements.txt" -exec pip install -r {} \;
     - name: Run pylint
       run: |
-        pylint $(find . -name "*.py") --fail-under 9.0
+        pylint $(find . -name "*.py")
   
   test:
     runs-on: ubuntu-latest
