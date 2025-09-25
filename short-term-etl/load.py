@@ -1,3 +1,5 @@
+"""Uses helper scripts to complete the load stage of the short-term ETL."""
+
 from os import environ as ENV
 
 import pyodbc
