@@ -3,19 +3,6 @@
 import pyodbc
 
 
-def check_max_plant_id(data: list[dict]) -> int:
-    """Checks the maximum plant id found in a list of dictionaries 
-    and returns the value as in integer."""
-    return max(data, key=lambda x: x["plant_id"])
-
-
-def has_new_data(transformed_data: list[dict], rds_data: list[dict]) -> bool:
-    """Checks if the transformed data contains new entries when compared to the master rds data."""
-    if check_max_plant_id(transformed_data) > check_max_plant_id(rds_data):
-        return True
-    return False
-
-
 def check_species_exists_in_species_table(conn: pyodbc.Connection, species_name: str) -> int | None:
     """Returns the species_id if the species_name already exists in the table."""
     with conn.cursor() as cur:
@@ -192,7 +179,23 @@ def single_load(conn: pyodbc.Connection, data: dict):
         conn, plant_id, species_id, country_id, city_id, botanist_id)
 
 
+def check_max_plant_id(data: list[dict]) -> int:
+    """Checks the maximum plant id found in a list of dictionaries 
+    and returns the value as in integer."""
+    return max(data, key=lambda x: x["plant_id"])["plant_id"]
+
+
 def load_master_data(conn: pyodbc.Connection, data: list[dict]):
     """Loads all master data from the records passed in from the transform stage."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT MAX(plant_id) FROM plant")
+        max_rds_plant_id = cur.fetchone()[0]
+
+    if max_rds_plant_id >= check_max_plant_id(data):
+        # No new master data
+        return
+
+    data = list(filter(lambda r: r["plant_id"] > max_rds_plant_id, data))
+
     for record in data:
         single_load(conn, data=record)
