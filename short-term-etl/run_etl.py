@@ -1,4 +1,4 @@
-import pyodbc
+"""ETL script designed to be run inside an AWS Lambda function as a container."""
 
 from extract import extract_all_plant_data
 from transform import clean_data
