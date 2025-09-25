@@ -15,8 +15,8 @@ BUCKET = "c19-ajldka-lmnh-plants"
 def get_s3_connection():
     """Connect to the plant data S3 bucket."""
     return boto3.Session(
-        aws_access_key_id=getenv("AWS_ACCESS_KEY"),
-        aws_secret_access_key=getenv("AWS_SECRET_ACCESS_KEY"),
+        aws_access_key_id=getenv("AWS_ACCESS_KEY_AJLDKA"),
+        aws_secret_access_key=getenv("AWS_SECRET_ACCESS_KEY_AJLDKA"),
         region_name=getenv("AWS_REGION")
     )
 
