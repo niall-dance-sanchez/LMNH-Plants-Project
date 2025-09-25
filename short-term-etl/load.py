@@ -3,7 +3,6 @@
 from os import environ as ENV
 
 import pyodbc
-from dotenv import load_dotenv
 
 from insert_transactional_data import insert_transactional_data
 from load_master_data import load_master_data
@@ -23,8 +22,3 @@ def load_cleaned_data(data: list[dict], con: pyodbc.Connection) -> None:
     load_master_data(data=data, conn=con)
     # Insert the reading transaction data
     insert_transactional_data(data=data, con=con)
-
-
-if __name__ == "__main__":
-    load_dotenv()
-    conn = get_connection()
