@@ -73,7 +73,7 @@ def check_city_exists_in_city_table(conn: pyodbc.Connection, city_name: str) -> 
     return city_id
 
 
-def check_botanist_exists_in_botanist_table(conn: pyodbc.Connection, botanist_email: str) -> int:
+def check_botanist_exists_in_botanist_table(conn: pyodbc.Connection, botanist_email: str) -> int | None:
     """Returns the botanist_id if the botanist_email already exists in the table."""
     with conn.cursor() as cur:
         query = f"""
