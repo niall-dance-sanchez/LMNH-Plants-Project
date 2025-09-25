@@ -85,7 +85,7 @@ def check_botanist_exists_in_botanist_table(conn: pyodbc.Connection, botanist_em
         botanist_id = cur.fetchone()
 
     return botanist_id
-
+    return botanist_id[0] if botanist_id is not None else None
 
 def insert_species_into_species_table(conn: pyodbc.Connection, species_name: str):
     """Inserts data into the species table."""
