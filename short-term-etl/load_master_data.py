@@ -179,7 +179,7 @@ def load_master_data(conn: pyodbc.Connection, data: dict):
         botanist_id = insert_botanist_into_botanist_table(conn, data["botanist"]["name"],
                                             data["botanist"]["email"])
 
-    insert_plant_into_plant_table(conn, species_id, country_id, city_id, botanist_id)
+    insert_plant_into_plant_table(conn, plant_id, species_id, country_id, city_id, botanist_id)
 
 
 
