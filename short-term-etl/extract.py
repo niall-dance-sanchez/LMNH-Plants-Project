@@ -36,7 +36,7 @@ async def get_batch_plant_data(start_id: int, end_id: int) -> list[dict]:
     return responses
 
 
-def extract_all_plant_data(batch_size: int = 10) -> list[list]:
+def extract_all_plant_data(batch_size: int = 10) -> list[dict]:
     """
     Extracts all of the plant data with a chosen batch size.
     The process will stop if a batch contains no plant data.
