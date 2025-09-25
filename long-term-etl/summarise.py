@@ -21,7 +21,7 @@ def create_summary(data: list[dict]) -> pd.DataFrame:
         column="soil_moisture", aggfunc="min"),
         max_moisture=pd.NamedAgg(
         column="soil_moisture", aggfunc="max"),
-        std_temp=pd.NamedAgg(
+        std_moisture=pd.NamedAgg(
         column="soil_moisture", aggfunc="std"),
         times_watered=pd.NamedAgg(
         column="last_watered", aggfunc="nunique"
