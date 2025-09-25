@@ -99,7 +99,7 @@ def clean_recording_taken(data) -> datetime:
     return data["recording_taken"]
 
 
-def clean_plants(data) -> dict:
+def clean_plants(data: dict) -> dict:
     """Clean all plant data."""
     cleaned_data = {
         "plant_id": clean_plant_id(data),
@@ -112,6 +112,14 @@ def clean_plants(data) -> dict:
         "recording_taken": clean_recording_taken(data)
     }
 
+    return cleaned_data
+
+
+def clean_data(data: list[dict]) -> list[dict]:
+    """Cleans each record in a list of data."""
+    cleaned_data = []
+    for record in data:
+        cleaned_data.append(clean_plants(record))
     return cleaned_data
 
 
