@@ -143,16 +143,16 @@ def insert_botanist_into_botanist_table(conn: pyodbc.Connection, botanist_name: 
         conn.commit()
 
 
-def insert_plant_into_plant_table(conn: pyodbc.Connection, species_id: int, country_id: int, city_id: int, botanist_id: int):
+def insert_plant_into_plant_table(conn: pyodbc.Connection, plant_id: int, species_id: int, country_id: int, city_id: int, botanist_id: int):
     """Inserts data into the plant table."""
     with conn.cursor() as cur:
         query = f"""
                 INSERT INTO delta.plant
-                    (species_id, country_id, city_id, botanist_id)
+                    (plant_id, species_id, country_id, city_id, botanist_id)
                 VALUES
-                    (?, ?, ?, ?)
+                    (?, ?, ?, ?, ?)
                 """
-        cur.execute(query, (species_id, country_id, city_id, botanist_id,))
+        cur.execute(query, (plant_id, species_id, country_id, city_id, botanist_id,))
         conn.commit()
 
 
