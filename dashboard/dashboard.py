@@ -1,23 +1,30 @@
 """This module configures the LMNH plants dashboard."""
 from os import environ as ENV
+from datetime import datetime
 
 import boto3
 import streamlit as st
 import pandas as pd
 import awswrangler as wr
-from datetime import datetime, date, timedelta
+from dotenv import load_dotenv
 
 # Start Boto3 Session to get the data
+
+
 def start_boto3_session():
-    return boto3.client('s3', aws_access_key_id=ENV["AWS_ACCESS_KEY_AJLDKA"],
-                        aws_secret_access_key=ENV["AWS_SECRET_KEY_AJLDKA"],
-                        region_name=ENV["AWS_REGION_AJLDKA"])
+    """Starts a boto3 session."""
+    session = boto3.Session(
+        aws_access_key_id=ENV["AWS_ACCESS_KEY_AJLDKA"],
+        aws_secret_access_key=ENV["AWS_SECRET_KEY_AJLDKA"],
+        region_name=ENV["AWS_REGION_AJLDKA"]
+    )
+    return session
 
 
 @st.cache_data
 def load_data_from_athena():
     """Function that loads data from the plants database using Athena."""
-    query = "SELECT * FROM transaction;"
+    query = "SELECT * FROM plant JOIN SPECIES USING (species_id);" # Create big query for all data here
     session = start_boto3_session()
 
     data = wr.athena.read_sql_query(
@@ -77,7 +84,7 @@ def live_data_page():#conn: Connection, live_plant_data: list[str]):
 
     with right_col:
         pass # Insert second graph (function to be made)
-    
+
 
 
 def all_plant_data_page():  # conn: Connection, live_plant_data: list[str]):
@@ -96,7 +103,7 @@ def all_plant_data_page():  # conn: Connection, live_plant_data: list[str]):
     with st.container(border=True, height=108):
         st.multiselect(
             label=":seedling: Plants: :seedling:", options=plant_list, default=plant_list)
-        
+
     st.divider()
 
     start_date = st.date_input("Start Date:", value=None)
@@ -115,9 +122,11 @@ def all_plant_data_page():  # conn: Connection, live_plant_data: list[str]):
 
 
 if __name__ == "__main__":
+    load_dotenv()
 
-    create_sidebar()
-    if st.session_state.page == "Live Data":
-        live_data_page()
-    if st.session_state.page == "All Plant Data":
-        all_plant_data_page()
+    print(load_data_from_athena())
+    # create_sidebar()
+    # if st.session_state.page == "Live Data":
+    #     live_data_page()
+    # if st.session_state.page == "All Plant Data":
+    #     all_plant_data_page()
