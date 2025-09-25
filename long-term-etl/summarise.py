@@ -4,7 +4,21 @@ import pandas as pd
 
 
 def create_summary(data: list[dict]) -> pd.DataFrame:
+    """Creates a dataframe with key summary statistics for each plant."""
 
     df = pd.DataFrame(data)
 
-    df.groupby(["plant_id"]).aggregate()
+    return df.groupby(["plant_id"]).aggregate(avg_temp=pd.NamedAgg(column="temperature", aggfunc="mean"),
+                                              min_temp=pd.NamedAgg(
+        column="temperature", aggfunc="min"),
+        max_temp=pd.NamedAgg(
+        column="temperature", aggfunc="max"),
+        avg_moisture=pd.NamedAgg(
+        column="soil_moisture", aggfunc="mean"),
+        min_moisture=pd.NamedAgg(
+        column="soil_moisture", aggfunc="min"),
+        max_moisture=pd.NamedAgg(
+        column="soil_moisture", aggfunc="max"),
+        times_watered=pd.NamedAgg(
+        column="last_watered", aggfunc="nunique"
+    ))
