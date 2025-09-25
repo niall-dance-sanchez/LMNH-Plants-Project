@@ -42,7 +42,7 @@ def check_species_exists_in_species_table(conn: pyodbc.Connection, species_name:
         cur.execute(query)
         species_id = cur.fetchone()
     
-    return species_id
+    return species_id[0] if species_id is not None else None
 
 
 def check_country_exists_in_country_table(conn: pyodbc.Connection, country_name: str) -> int:
