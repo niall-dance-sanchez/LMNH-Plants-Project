@@ -159,25 +159,25 @@ def insert_plant_into_plant_table(conn: pyodbc.Connection, plant_id: int, specie
 def load_master_data(conn: pyodbc.Connection, data: dict):
     """Loads new master data into the database if new data is found."""
     # Check "static" tables and insert when data isn't found
-    if check_species_exists_in_species_table(conn, data["name"]) is None:
-        insert_species_into_species_table(conn, data["name"])
-    
-    if check_country_exists_in_country_table(conn, data["origin_location"]["country"]) is None:
-        insert_country_into_country_table(conn, data["origin_location"]["country"])
+    plant_id = data["plant_id"]
 
-    if check_city_exists_in_city_table(conn, data["origin_location"]["city"]) is None:
-        insert_city_into_city_table(conn, data["origin_location"]["city"])
-
-    if check_botanist_exists_in_botanist_table(conn, data["botanist"]["name"], 
-                                               data["botanist"]["email"]):
-        insert_botanist_into_botanist_table(conn, data["botanist"]["name"],
-                                            data["botanist"]["email"])
-        
-    # Check for relevant id's from the "static" tables and insert them into the plant table
     species_id = check_species_exists_in_species_table(conn, data["name"])
-    country_id = check_country_exists_in_country_table(conn, data["origin_location"]["country"])
+    if not species_id:
+        species_id = insert_species_into_species_table(conn, data["name"])
+    
+    country_id = check_country_exists_in_country_table(conn, data["origin_location"]["country"]) 
+    if not country_id:
+        country_id = insert_country_into_country_table(conn, data["origin_location"]["country"])
+
     city_id = check_city_exists_in_city_table(conn, data["origin_location"]["city"])
-    botanist_id = check_botanist_exists_in_botanist_table(conn, data["botanist"]["name"], data["botanist"]["email"])
+    if not city_id:    
+        city_id = insert_city_into_city_table(conn, data["origin_location"]["city"])
+
+    botanist_id = check_botanist_exists_in_botanist_table(conn, data["botanist"]["name"], 
+                                               data["botanist"]["email"])
+    if not botanist_id:
+        botanist_id = insert_botanist_into_botanist_table(conn, data["botanist"]["name"],
+                                            data["botanist"]["email"])
 
     insert_plant_into_plant_table(conn, species_id, country_id, city_id, botanist_id)
 
