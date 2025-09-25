@@ -70,7 +70,7 @@ def check_city_exists_in_city_table(conn: pyodbc.Connection, city_name: str) -> 
         cur.execute(query)
         city_id = cur.fetchone()
 
-    return city_id
+    return city_id[0] if city_id is not None else None
 
 
 def check_botanist_exists_in_botanist_table(conn: pyodbc.Connection, botanist_email: str) -> int | None:
