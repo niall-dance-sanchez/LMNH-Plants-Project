@@ -28,8 +28,7 @@ def has_new_data(transformed_data: list[dict], rds_data: list[dict]) -> bool:
     """Checks if the transformed data contains new entries when compared to the master rds data."""
     if check_max_plant_id(transformed_data) > check_max_plant_id(rds_data):
         return True
-    else:
-        return False 
+    return False 
 
 
 def check_species_exists_in_species_table(conn: pyodbc.Connection, species_name: str) -> int:
