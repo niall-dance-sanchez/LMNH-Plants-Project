@@ -44,4 +44,5 @@ jobs:
         pip install -r short-term-etl/requirements.txt
     - name: Run tests
       run: |
+        cd short-term-etl
         pytest test_*.py
