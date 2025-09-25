@@ -157,8 +157,8 @@ def insert_plant_into_plant_table(conn: pyodbc.Connection, plant_id: int, specie
         conn.commit()
 
 
-def load_master_data(conn: pyodbc.Connection, data: dict):
-    """Loads new master data into the database if new data is found."""
+def single_load(conn: pyodbc.Connection, data: dict):
+    """Loads one record of new master data into the database if new data is found."""
     # Check "static" tables and insert when data isn't found
     plant_id = data["plant_id"]
 
@@ -182,6 +182,14 @@ def load_master_data(conn: pyodbc.Connection, data: dict):
 
     insert_plant_into_plant_table(conn, plant_id, species_id, country_id, city_id, botanist_id)
 
+
+def load_master_data(conn: pyodbc.Connection, data: list[dict]):
+    """Loads all master data from the records passed in from the transform stage."""
+    # TODO: Making this change so that the API is a bit more uniform (just have to pass
+    # a list of dicts for the main function of every script). This script's also been
+    # mangled by the suggestions on GitHub when it was merged, so that'll need to be sorted.
+    # in a separate branch. For now, this is just a dummy function.
+    pass
 
 
 if __name__ == "__main__":
