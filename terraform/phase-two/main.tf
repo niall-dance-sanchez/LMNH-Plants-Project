@@ -218,7 +218,7 @@ resource "aws_ecs_task_definition" "c19_ajldka_ecs_plants_task_definition" {
   task_role_arn = aws_iam_role.c19_ajldka_ecs_task_role.arn
   container_definitions = jsonencode([{
         name      = "c19-ajldka-plants-dashboard"
-        image     = "129033205317.dkr.ecr.eu-west-2.amazonaws.com/c19-ajldka-plants-dashboard:latest"
+        image     = "129033205317.dkr.ecr.eu-west-2.amazonaws.com/c19-ajldka-lmnh-plants-dashboard:latest"
         essential = true
         portMappings = [
         {
