@@ -6,7 +6,11 @@ from transform import (
     clean_plant_id,
     clean_plant_name,
     clean_temperature,
-    clean_origin_location
+    clean_origin_location,
+    clean_botanist,
+    clean_last_watered,
+    clean_soil_moisture,
+    clean_recording_taken
 )
 
 
@@ -85,3 +89,25 @@ def test_clean_origin_location_bad_country_type(raw_data):
     with pytest.raises(ValueError) as exc_info:
         clean_origin_location(bad_data)
         assert "Invalid country value" in exc_info.value
+
+
+def test_clean_botanist_correct_value(raw_data):
+    botanist = clean_botanist(raw_data)
+    assert botanist["name"] in raw_data["botanist"]["name"]
+    assert botanist["email"] in raw_data["botanist"]["email"]
+
+
+def test_clean_botanist_bad_name_type(raw_data):
+    bad_data = raw_data
+    bad_data["botanist"]["name"] = 101
+    with pytest.raises(ValueError) as exc_info:
+        clean_botanist(bad_data)
+        assert "Invalid botanist name value" in exc_info.value
+
+
+def test_clean_botanist_bad_email_type(raw_data):
+    bad_data = raw_data
+    bad_data["botanist"]["email"] = 101
+    with pytest.raises(ValueError) as exc_info:
+        clean_botanist(bad_data)
+        assert "Invalid botanist email value" in exc_info.value
