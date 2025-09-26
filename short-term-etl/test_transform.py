@@ -1,6 +1,7 @@
 # pylint: skip-file
 
 import pytest
+from datetime import datetime
 
 from transform import (
     clean_plant_id,
@@ -132,3 +133,31 @@ def test_clean_soil_moisture_bad_moisture_value(raw_data):
     with pytest.raises(ValueError) as exc_info:
         clean_soil_moisture(bad_data)
         assert "Invalid soil moisture value" in exc_info.value
+
+
+def test_clean_last_watered_correct_type(raw_data):
+    last_watered = clean_last_watered(raw_data)
+    assert isinstance(last_watered, datetime)
+
+
+def test_clean_last_watered_correct_datetime(raw_data):
+    changed_datetime = raw_data
+    changed_datetime["last_watered"] = "2025-01-01T00:00:00.000Z"
+    new_datetime = clean_last_watered(changed_datetime)
+    assert new_datetime == datetime.fromisoformat("2025-01-01T00:00:00.000Z")
+
+
+def test_clean_last_watered_bad_type(raw_data):
+    bad_data = raw_data
+    bad_data["last_watered"] = True
+    with pytest.raises(ValueError) as exc_info:
+        clean_last_watered(bad_data)
+        assert "Invalid last watered value" in exc_info.value
+
+
+def test_clean_last_watered_not_iso_format(raw_data):
+    bad_data = raw_data
+    bad_data["last_watered"] = "Hello"
+    with pytest.raises(ValueError) as exc_info:
+        clean_last_watered(bad_data)
+        assert "Invalid isoformat string" in exc_info.value
