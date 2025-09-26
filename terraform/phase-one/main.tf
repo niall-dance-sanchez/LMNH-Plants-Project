@@ -5,19 +5,6 @@ provider "aws" {
     secret_key = var.AWS_SECRET_ACCESS_KEY
 }
 
-# s3 bucket for terraform backend
-resource "aws_s3_bucket" "c19_ajldka_terraform_state" {
-  bucket        = "c19-ajldka-terraform-state"
-  force_destroy = false
-}
-
-resource "aws_s3_bucket_versioning" "terraform_state_versioning" {
-  bucket = aws_s3_bucket.c19_ajldka_terraform_state.id 
-  versioning_configuration {
-    status = "Disabled"
-  }
-}
-
 # s3 bucket for plants data
 resource "aws_s3_bucket" "c19_ajldka_s3_lmnh_plants" {
     bucket = "c19-ajldka-lmnh-plants"

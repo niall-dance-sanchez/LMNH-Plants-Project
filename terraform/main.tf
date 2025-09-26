@@ -1,0 +1,27 @@
+module "phase-one" {
+  source = "./phase-one"
+  AWS_ACCESS_KEY = var.AWS_ACCESS_KEY
+  AWS_SECRET_ACCESS_KEY = var.AWS_SECRET_ACCESS_KEY
+  AWS_REGION = var.AWS_REGION
+  DB_HOST = var.DB_HOST
+  DB_PORT = var.DB_PORT
+  DB_NAME = var.DB_NAME
+  DB_DRIVER = var.DB_DRIVER
+  DB_PASSWORD = var.DB_PASSWORD
+  DB_SCHEMA = var.DB_SCHEMA
+  DB_USER = var.DB_USER
+}
+
+module "phase-two" {
+  source = "./phase-two"
+  AWS_ACCESS_KEY = var.AWS_ACCESS_KEY
+  AWS_SECRET_ACCESS_KEY = var.AWS_SECRET_ACCESS_KEY
+  AWS_REGION = var.AWS_REGION
+  DB_HOST = var.DB_HOST
+  DB_PORT = var.DB_PORT
+  DB_NAME = var.DB_NAME
+  DB_DRIVER = var.DB_DRIVER
+  DB_PASSWORD = var.DB_PASSWORD
+  DB_SCHEMA = var.DB_SCHEMA
+  DB_USER = var.DB_USER
+}
