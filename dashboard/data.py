@@ -1,17 +1,19 @@
 """Functions to connect and retrieve the plant data."""
 
-import pyodbc
 from os import environ as ENV
+
+import pyodbc
 import awswrangler as wr
 import pandas as pd
 import boto3
 import streamlit as st
 
 
+
+
 @st.cache_resource
 def start_s3_session() -> boto3.Session:
     """Establishes an s3 connection."""
-
     return boto3.Session(
         aws_access_key_id=ENV["AWS_ACCESS_KEY_AJLDKA"],
         aws_secret_access_key=ENV["AWS_SECRET_ACCESS_KEY_AJLDKA"],
@@ -22,7 +24,6 @@ def start_s3_session() -> boto3.Session:
 @st.cache_resource
 def get_db_connection():
     """Connect to the plant database hosted on RDS."""
-
     conn_str = (f"DRIVER={{{ENV['DB_DRIVER']}}};SERVER={ENV['DB_HOST']};"
                 f"PORT={ENV['DB_PORT']};DATABASE={ENV['DB_NAME']};"
                 f"UID={ENV['DB_USER']};PWD={ENV['DB_PASSWORD']};Encrypt=no;")
@@ -40,17 +41,17 @@ def retrieve_all_summary_plant_data(database: str, _session: boto3.Session) -> p
             ;
             """
 
-    return wr.athena.read_sql_query(
+    return pd.DataFrame(wr.athena.read_sql_query(
         query,
         database=database,
-        boto3_session=_session)
+        boto3_session=_session))
 
 
 @st.cache_data
-def retrieve_all_live_plant_data(con) -> list[dict]:
+def retrieve_all_live_plant_data(_con) -> list[dict]:
     """Extract all relevant (dropping unnecessary ids) plant data from the RDS."""
 
-    with con.cursor() as cur:
+    with _con.cursor() as cur:
         query = """
                 SELECT 
                     delta.plant.plant_id,
@@ -77,4 +78,4 @@ def retrieve_all_live_plant_data(con) -> list[dict]:
         data = [dict(zip(column_names, row))
                 for row in cur.fetchall()]
 
-    return data
+    return pd.DataFrame(data)

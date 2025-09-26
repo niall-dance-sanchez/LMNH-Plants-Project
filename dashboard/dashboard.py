@@ -1,39 +1,24 @@
 """This module configures the LMNH plants dashboard."""
-from os import environ as ENV
 from datetime import datetime
 
-import boto3
 import streamlit as st
 import pandas as pd
-import awswrangler as wr
 from dotenv import load_dotenv
 
-# Start Boto3 Session to get the data
+from data import (start_s3_session,
+                  get_db_connection,
+                  retrieve_all_summary_plant_data,
+                  retrieve_all_live_plant_data)
+
+from live_plant_data_functions import (create_moisture_level_line_graph,
+                                       create_temperature_line_graph)
+from all_plant_data_functions import (historic_plant_temperature,
+                                      historic_plant_moisture,
+                                      historic_plant_waterings)
 
 
-def start_boto3_session():
-    """Starts a boto3 session."""
-    session = boto3.Session(
-        aws_access_key_id=ENV["AWS_ACCESS_KEY_AJLDKA"],
-        aws_secret_access_key=ENV["AWS_SECRET_KEY_AJLDKA"],
-        region_name=ENV["AWS_REGION_AJLDKA"]
-    )
-    return session
 
-
-@st.cache_data
-def load_data_from_athena():
-    """Function that loads data from the plants database using Athena."""
-    query = "SELECT * FROM plant;" # Create big query for all data here
-    session = start_boto3_session()
-
-    data = wr.athena.read_sql_query(
-        query, database=ENV["DB_NAME"], boto3_session=session)
-
-    return data
-
-
-# Sidebar
+# Create sidebar
 
 def create_sidebar():
     """Creates the sidebar and sets up the tabs"""
@@ -48,11 +33,9 @@ def create_sidebar():
         st.session_state.page = "All Plant Data"
 
 
+# Create pages from sidebar
 
-
-# Pages from Sidebar
-
-def live_data_page():#conn: Connection, live_plant_data: list[str]):
+def live_data_page(df: pd.DataFrame):
     """The default homepage of the dashboard which shows the live data."""
     # Page Title
     st.title("LMNH Botany Department Dashboard")
@@ -62,7 +45,16 @@ def live_data_page():#conn: Connection, live_plant_data: list[str]):
     current_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # PLACEHOLDER PLANT NUMBER
-    plant_number = 50
+    plant_number = df["plant_id"].nunique()
+
+    plant_id_list = df["plant_id"].unique()
+
+    st.divider()
+
+    # Set up for plant count and date/time at top of page
+    with st.container(border=True, height=108):
+        st.multiselect(
+            label=":seedling: Plants: :seedling:", options=plant_id_list, default=plant_id_list)
 
     # Set up for plant count and date/time at top of page
     left_text, right_text = st.columns(2)
@@ -77,56 +69,54 @@ def live_data_page():#conn: Connection, live_plant_data: list[str]):
     # data
     st.divider()
 
-    # Set up columns for graphs
-    left_col, right_col = st.columns(2)
-    with left_col:
-        pass # Insert first graph (function to be made)
+    # Set up graphs
+    st.altair_chart(create_moisture_level_line_graph(df, plant_id_list))
 
-    with right_col:
-        pass # Insert second graph (function to be made)
+    st.altair_chart(create_temperature_line_graph(df, plant_id_list))
 
 
 
-def all_plant_data_page():  # conn: Connection, live_plant_data: list[str]):
-    """A secectable tab of the dashboard which shows all stored plant data."""
+def all_plant_data_page(df: pd.DataFrame):
+    """A selectable tab of the dashboard which shows all stored plant data."""
     # Page Title
     st.title("LMNH Botany Department Dashboard")
     st.header("All Plant Data")
 
-    # PLACEHOLDER REPLACE WITH ACTUAL PLANT LIST
-    plant_list = ["Aglaonema Commutatum", "Aloe Vera", "Amaryllis",
-                  "Anthurium", "Araucaria Heterophylla", "Asclepias Curassavica",
-                  "Begonia", "Bird of paradise", "Black bat flower"
-                  "Brugmansia X Candida", "Cactus"]
+
+    plant_id_list = df["plant_id"].unique()
 
     # Set up for plant count and date/time at top of page
     with st.container(border=True, height=108):
         st.multiselect(
-            label=":seedling: Plants: :seedling:", options=plant_list, default=plant_list)
+            label=":seedling: Plants: :seedling:", options=plant_id_list, default=plant_id_list)
 
     st.divider()
 
     start_date = st.date_input("Start Date:", value=None)
-
-    end_date = st.date_input("End Date: ", value=None)
-
+    end_date = st.date_input("End Date: ", value="today")
     # Set up columns for graphs
     left_col, right_col = st.columns(2)
     with left_col:
-        pass  # Insert first graph (function to be made)
+        st.altair_chart(historic_plant_temperature(df, start_date, end_date, plant_id_list))
 
     with right_col:
-        pass  # Insert second graph (function to be made)
+        st.altair_chart(historic_plant_moisture(df, start_date, end_date,plant_id_list))
+
+    st.altair_chart(historic_plant_waterings(df, start_date, end_date, plant_id_list))
 
 
 
 
 if __name__ == "__main__":
     load_dotenv()
+    session = start_s3_session()
+    conn = get_db_connection()
 
-    # print(load_data_from_athena())
+    live_data = retrieve_all_live_plant_data(conn)
+    historic_data = retrieve_all_summary_plant_data("c19-ajldka-lmnh-plants-db", session)
+
     create_sidebar()
     if st.session_state.page == "Live Data":
-        live_data_page()
+        live_data_page(live_data)
     if st.session_state.page == "All Plant Data":
-        all_plant_data_page()
+        all_plant_data_page(historic_data)
