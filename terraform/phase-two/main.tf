@@ -235,8 +235,8 @@ resource "aws_ecs_task_definition" "c19_ajldka_ecs_plants_task_definition" {
         {name = "DB_PORT", value = var.DB_PORT},
         {name = "DB_SCHEMA", value = var.DB_SCHEMA},
         {name = "DB_DRIVER", value = var.DB_DRIVER},
-        {name = "AWS_ACCESS_KEY", value = var.AWS_ACCESS_KEY},
-        {name = "AWS_SECRET_ACCESS_KEY", value = var.AWS_SECRET_ACCESS_KEY},
+        {name = "AWS_ACCESS_KEY_AJLDKA", value = var.AWS_ACCESS_KEY},
+        {name = "AWS_SECRET_ACCESS_KEY_AJLDKA", value = var.AWS_SECRET_ACCESS_KEY},
         {name = "AWS_REGION", value = var.AWS_REGION}
         ],
     logConfiguration = {
