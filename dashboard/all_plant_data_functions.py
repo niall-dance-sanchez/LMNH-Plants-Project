@@ -15,13 +15,14 @@ def historic_plant_temperature(df: pd.DataFrame, start_date: str,
     """
     df["date"] = pd.to_datetime(
         {"year": df.year, "month": df.month, "day": df.day})
+    df["date"] = df["date"].dt.date
     df = df[["species_name", "plant_id", "avg_temp", "date", "botanist_email"]]
     df = df[df["date"].between(start_date, end_date)]
     mask = df["plant_id"].isin(_plant_id_list)
     df = df[mask]
 
-    start_date = pd.to_datetime(str(start_date)).dt.date
-    end_date = pd.to_datetime(str(end_date)).dt.date
+    start_date = pd.to_datetime(str(start_date))
+    end_date = pd.to_datetime(str(end_date))
 
     graph = alt.Chart(
         df,
@@ -48,6 +49,7 @@ def historic_plant_moisture(df: pd.DataFrame, start_date: str,
     """
     df["date"] = pd.to_datetime(
         {"year": df.year, "month": df.month, "day": df.day})
+    df["date"] = df["date"].dt.date
     df = df[["species_name", "plant_id", "avg_moisture", "date", "botanist_email"]]
     df = df[df["date"].between(start_date, end_date)]
     mask = df["plant_id"].isin(_plant_id_list)
@@ -57,8 +59,8 @@ def historic_plant_moisture(df: pd.DataFrame, start_date: str,
         df,
         title=f"Average Plant Moisture: {start_date} - {end_date}"
         ).mark_line(point=True).encode(
-        x=alt.X("date"),
-        y=alt.Y("avg_moisture"),
+        x=alt.X("date", title="Date"),
+        y=alt.Y("avg_moisture", title="Average Moisture"),
         color="plant_id:N",
         tooltip=[alt.Tooltip("plant_id", title="Plant ID"),
                  alt.Tooltip("species_name", title="Species"),
@@ -77,6 +79,7 @@ def historic_plant_waterings(df: pd.DataFrame, start_date: str,
     """
     df["date"] = pd.to_datetime(
         {"year": df.year, "month": df.month, "day": df.day})
+    df["date"] = df["date"].dt.date
     df = df[["species_name", "plant_id",
              "times_watered", "date", "botanist_email"]]
     df = df[df["date"].between(start_date, end_date)]
@@ -87,9 +90,10 @@ def historic_plant_waterings(df: pd.DataFrame, start_date: str,
         df,
         title=f"Number of Times Plants were Watered: {start_date} - {end_date}"
         ).mark_bar().encode(
-        x=alt.X("date"),
-        y=alt.Y("sum(times_watered):Q"),
+        x=alt.X("plant_id", title="Plant ID"),
+        y=alt.Y("sum(times_watered):Q", title="Number of Times Watered"),
         xOffset="plant_id:N",
+        column="date",
         color=alt.Color("plant_id:N"),
         tooltip=[alt.Tooltip("plant_id", title="Plant ID"),
                  alt.Tooltip("species_name", title="Species"),
