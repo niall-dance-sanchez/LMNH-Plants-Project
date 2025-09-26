@@ -6,8 +6,8 @@ import streamlit as st
 
 
 @st.cache_data
-def create_sales_per_day(df: pd.DataFrame, plant_ids: list[int]) -> alt.Chart:
-    """Produces a line chart of total sales over time."""
+def create_temperature_line_graph(df: pd.DataFrame, plant_ids: list[int]) -> alt.Chart:
+    """Produces a line graph of the temperature over time of plants with the IDs provided."""
 
     return alt.Chart(df[df["plant_id"].isin(plant_ids)], title="Plant Temperature Readings").mark_line().encode(
         alt.X("recording_taken", title="Recording Taken",
@@ -25,8 +25,8 @@ def create_sales_per_day(df: pd.DataFrame, plant_ids: list[int]) -> alt.Chart:
 
 
 @st.cache_data
-def create_sales_per_day(df: pd.DataFrame, plant_ids: list[int]) -> alt.Chart:
-    """Produces a line chart of total sales over time."""
+def create_moisture_level_line_graph(df: pd.DataFrame, plant_ids: list[int]) -> alt.Chart:
+    """Produces a line graph of the moisture level over time of plants with the IDs provided."""
 
     return alt.Chart(df[df["plant_id"].isin(plant_ids)], title="Plant Soil Moisture Readings").mark_line().encode(
         alt.X("recording_taken", title="Recording Taken",
