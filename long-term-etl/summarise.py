@@ -8,7 +8,7 @@ def create_summary(data: list[dict]) -> pd.DataFrame:
 
     df = pd.DataFrame(data)
 
-    return df.groupby(["plant_id"]).aggregate(
+    return df.groupby(["plant_id", "species_name", "country_name", "city_name", "botanist_email"]).aggregate(
         avg_temp=pd.NamedAgg(column="temperature", aggfunc="mean"),
         min_temp=pd.NamedAgg(column="temperature", aggfunc="min"),
         max_temp=pd.NamedAgg(column="temperature", aggfunc="max"),
@@ -18,4 +18,4 @@ def create_summary(data: list[dict]) -> pd.DataFrame:
         max_moisture=pd.NamedAgg(column="soil_moisture", aggfunc="max"),
         std_moisture=pd.NamedAgg(column="soil_moisture", aggfunc="std"),
         times_watered=pd.NamedAgg(column="last_watered", aggfunc="nunique")
-    )
+    ).reset_index()

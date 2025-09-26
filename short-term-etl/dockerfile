@@ -1,3 +1,4 @@
+# Get custom lambda image
 FROM public.ecr.aws/lambda/python:latest
 
 # Preform dark arts I do not understand
@@ -23,14 +24,21 @@ RUN mkdir /opt/python/ && cd /opt/python/ && pip install pyodbc -t .
 
 RUN dnf install -y openssl
 
+# Set lambda root as working directory
 WORKDIR ${LAMBDA_TASK_ROOT}
 
+# Copy and install requirements
 COPY requirements.txt .
-
 RUN pip install -r requirements.txt
 
+# Copy dependant files
 COPY extract.py .
-COPY summarise.py . 
+COPY transform.py .
+COPY load_master_data.py .
+COPY insert_transactional_data.py .
 COPY load.py .
 
-CMD [ "load.handler" ]
+# Copy main ETL script and run
+
+COPY run_etl.py .
+CMD [ "run_etl.lambda_handler" ]

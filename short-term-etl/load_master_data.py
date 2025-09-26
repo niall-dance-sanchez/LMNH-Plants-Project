@@ -179,23 +179,32 @@ def single_load(conn: pyodbc.Connection, data: dict):
         conn, plant_id, species_id, country_id, city_id, botanist_id)
 
 
-def check_max_plant_id(data: list[dict]) -> int:
-    """Checks the maximum plant id found in a list of dictionaries 
-    and returns the value as in integer."""
-    return max(data, key=lambda x: x["plant_id"])["plant_id"]
-
-
-def load_master_data(conn: pyodbc.Connection, data: list[dict]):
-    """Loads all master data from the records passed in from the transform stage."""
+def return_plant_ids_in_rds(conn: pyodbc.Connection) -> list[int]:
+    """Returns a list of all plant IDs currently in the SQL server."""
     with conn.cursor() as cur:
-        cur.execute("SELECT MAX(plant_id) FROM plant")
-        max_rds_plant_id = cur.fetchone()[0]
+        cur.execute("SELECT plant_id FROM plant")
+        plant_ids = cur.fetchall()
+    plant_ids = [row[0] for row in plant_ids]
+    return plant_ids
 
-    if max_rds_plant_id >= check_max_plant_id(data):
+
+def is_new_master_data(data: list[dict], all_plant_ids: list[int]) -> list[dict] | None:
+    """
+    Checks if there's new master data to be inserted. If so, returns only the
+    records with new master data, otherwise returns None.
+    """
+    new_data = list(filter(lambda r: r["plant_id"] not in all_plant_ids, data))
+    if len(new_data) == 0:
         # No new master data
-        return
+        return None
+    return new_data
 
-    data = list(filter(lambda r: r["plant_id"] > max_rds_plant_id, data))
 
-    for record in data:
-        single_load(conn, data=record)
+def load_master_data(conn: pyodbc.Connection, data: list[dict]) -> None:
+    """Loads all master data from the records passed in from the transform stage."""
+    all_rds_plant_ids = return_plant_ids_in_rds(conn)
+    data = is_new_master_data(data, all_rds_plant_ids)
+
+    if data:
+        for record in data:
+            single_load(conn, data=record)
