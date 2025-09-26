@@ -1,5 +1,6 @@
 """Functions to connect and retrieve the plant data."""
 
+import pyodbc
 from os import environ as ENV
 import awswrangler as wr
 import pandas as pd
@@ -16,6 +17,17 @@ def start_s3_session() -> boto3.Session:
         aws_secret_access_key=ENV["AWS_SECRET_ACCESS_KEY_AJLDKA"],
         region_name="eu-west-2"
     )
+
+
+@st.cache_resource
+def get_db_connection():
+    """Connect to the plant database hosted on RDS."""
+
+    conn_str = (f"DRIVER={{{ENV['DB_DRIVER']}}};SERVER={ENV['DB_HOST']};"
+                f"PORT={ENV['DB_PORT']};DATABASE={ENV['DB_NAME']};"
+                f"UID={ENV['DB_USER']};PWD={ENV['DB_PASSWORD']};Encrypt=no;")
+
+    return pyodbc.connect(conn_str)
 
 
 @st.cache_data
