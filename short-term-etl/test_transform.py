@@ -5,7 +5,8 @@ import pytest
 from transform import (
     clean_plant_id,
     clean_plant_name,
-    clean_temperature
+    clean_temperature,
+    clean_origin_location
 )
 
 
@@ -62,3 +63,25 @@ def test_clean_temperature_bad_value(raw_data):
     with pytest.raises(ValueError) as exc_info:
         clean_temperature(bad_data)
         assert "Invalid temperature value" in exc_info.value
+
+
+def test_clean_origin_location_correct_value(raw_data):
+    origin_data = clean_origin_location(raw_data)
+    assert origin_data["city"] in raw_data["origin_location"]["city"]
+    assert origin_data["country"] in raw_data["origin_location"]["country"]
+
+
+def test_clean_origin_location_bad_city_type(raw_data):
+    bad_data = raw_data
+    bad_data["origin_location"]["city"] = 101
+    with pytest.raises(ValueError) as exc_info:
+        clean_origin_location(bad_data)
+        assert "Invalid city value" in exc_info.value
+
+
+def test_clean_origin_location_bad_country_type(raw_data):
+    bad_data = raw_data
+    bad_data["origin_location"]["country"] = 101
+    with pytest.raises(ValueError) as exc_info:
+        clean_origin_location(bad_data)
+        assert "Invalid country value" in exc_info.value
