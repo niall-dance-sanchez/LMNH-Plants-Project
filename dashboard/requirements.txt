@@ -7,4 +7,3 @@ awswrangler
 altair
 python-dotenv
 pyodbc
-
