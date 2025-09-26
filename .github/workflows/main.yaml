@@ -22,7 +22,7 @@ jobs:
         cd short-term-etl
         pip install -r requirements.txt
     - name: Run pylint
-      run: pylint *.py
+      run: pylint '*.py'
   lint-long-term-etl:
     runs-on: ubuntu-latest
     steps:
@@ -37,7 +37,7 @@ jobs:
         cd long-term-etl
         pip install -r requirements.txt
     - name: Run pylint
-      run: pylint *.py
+      run: pylint '*.py'
   test:
     runs-on: ubuntu-latest
     steps:
