@@ -88,19 +88,18 @@ def all_plant_data_page(df: pd.DataFrame):
     # Set up for plant count and date/time at top of page
     with st.container(border=True, height=108):
         st.multiselect(
-            label=":seedling: Plants: :seedling:", options=plant_id_list, default=plant_id_list)
+            label=":seedling: Plants: :seedling:", options=plant_id_list, default=[1, 2, 3])
 
     st.divider()
 
-    start_date = st.date_input("Start Date:", value=None)
+    start_date = st.date_input(
+        "Start Date:", value="2025-09-19")
     end_date = st.date_input("End Date: ", value="today")
     # Set up columns for graphs
-    left_col, right_col = st.columns(2)
-    with left_col:
-        st.altair_chart(historic_plant_temperature(df, start_date, end_date, plant_id_list))
+    st.altair_chart(historic_plant_temperature(df, start_date, end_date, plant_id_list))
 
-    with right_col:
-        st.altair_chart(historic_plant_moisture(df, start_date, end_date,plant_id_list))
+
+    st.altair_chart(historic_plant_moisture(df, start_date, end_date,plant_id_list))
 
     st.altair_chart(historic_plant_waterings(df, start_date, end_date, plant_id_list))
 
