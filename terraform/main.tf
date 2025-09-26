@@ -49,8 +49,12 @@ resource "aws_iam_role" "c19_ajldka_glue_role_lmnh_plants" {
 }
 
 resource "aws_iam_role_policy_attachment" "c19_ajldka_glue_role_attach_lmnh_plants" {
+  for_each = toset([
+    "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole",
+    "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+  ])
   role       = aws_iam_role.c19_ajldka_glue_role_lmnh_plants.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole"
+  policy_arn = each.value
 }
 
 resource "aws_glue_catalog_database" "c19_ajldka_glue_catalog_database_lmnh_plants" {
