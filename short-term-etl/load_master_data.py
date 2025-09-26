@@ -205,6 +205,6 @@ def load_master_data(conn: pyodbc.Connection, data: list[dict]) -> None:
     all_rds_plant_ids = return_plant_ids_in_rds(conn)
     data = is_new_master_data(data, all_rds_plant_ids)
 
-    if data is not None:
+    if data:
         for record in data:
             single_load(conn, data=record)
