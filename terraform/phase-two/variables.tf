@@ -16,7 +16,7 @@ variable DB_HOST {
 }
 
 variable DB_PORT {
-    type = number
+    type = string
 }
 
 variable DB_NAME {
