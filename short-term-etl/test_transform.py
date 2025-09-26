@@ -4,7 +4,8 @@ import pytest
 
 from transform import (
     clean_plant_id,
-    clean_plant_name
+    clean_plant_name,
+    clean_temperature
 )
 
 
@@ -40,3 +41,24 @@ def test_clean_plant_name_bad_type(raw_data):
     with pytest.raises(ValueError) as exc_info:
         clean_plant_name(bad_data)
         assert "Invalid name type" in exc_info.value
+
+
+def test_clean_temperature_correct_value(raw_data):
+    temperature = clean_temperature(raw_data)
+    assert temperature == raw_data["temperature"]
+
+
+def test_clean_temperature_bad_type(raw_data):
+    bad_data = raw_data
+    bad_data["temperature"] = True
+    with pytest.raises(ValueError) as exc_info:
+        clean_temperature(bad_data)
+        assert "Invalid temperature type" in exc_info.value
+
+
+def test_clean_temperature_bad_value(raw_data):
+    bad_data = raw_data
+    bad_data["temperature"] = -33.3
+    with pytest.raises(ValueError) as exc_info:
+        clean_temperature(bad_data)
+        assert "Invalid temperature value" in exc_info.value
