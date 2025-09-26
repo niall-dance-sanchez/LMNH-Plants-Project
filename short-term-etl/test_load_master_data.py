@@ -41,6 +41,6 @@ def test_is_new_master_data_new_data_is_list():
 
 def test_is_new_master_data_no_new_data():
     """Test that new_data is None when there is no new master data."""
-    existing_ids = list(range(1, 9))
-    new_data = is_new_master_data(incoming_data, existing_ids)
+    all_ids = list(range(1, 9))
+    new_data = is_new_master_data(incoming_data, all_ids)
     assert new_data is None
