@@ -1,77 +1,11 @@
+# provide aws key credentials
 provider "aws" {
     region = var.AWS_REGION
     access_key = var.AWS_ACCESS_KEY
     secret_key = var.AWS_SECRET_ACCESS_KEY
 }
 
-resource "aws_s3_bucket" "c19_ajldka_s3_lmnh_plants" {
-    bucket = "c19-ajldka-lmnh-plants"
-    force_destroy = true
-}
-
-resource "aws_s3_bucket_versioning" "c19_ajldka_lmnh_plants_versioning" {
-  bucket = aws_s3_bucket.c19_ajldka_s3_lmnh_plants.id
-  versioning_configuration {
-    status = "Disabled"
-  }
-}
-
-resource "aws_ecr_repository" "c19_ajldka_ecr_lmnh_plants" {
-  name                 = "c19-ajldka-lmnh-plants"
-  image_tag_mutability = "MUTABLE"
-}
-
-resource "aws_ecr_repository" "c19_ajldka_ecr_lmnh_plants_s3" {
-  name                 = "c19-ajldka-lmnh-plants-s3"
-  image_tag_mutability = "MUTABLE"
-}
-
-resource "aws_ecr_repository" "c19_ajldka_ecr_lmnh_plants_dashboard" {
-  name                 = "c19-ajldka-lmnh-plants-dashboard"
-  image_tag_mutability = "MUTABLE"
-}
-
-resource "aws_iam_role" "c19_ajldka_glue_role_lmnh_plants" {
-  name = "c19-ajldka-glue-role-lmnh_plants"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Principal = {
-          Service = "glue.amazonaws.com"
-        }
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "c19_ajldka_glue_role_attach_lmnh_plants" {
-  for_each = toset([
-    "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole",
-    "arn:aws:iam::aws:policy/AmazonS3FullAccess"
-  ])
-  role       = aws_iam_role.c19_ajldka_glue_role_lmnh_plants.name
-  policy_arn = each.value
-}
-
-resource "aws_glue_catalog_database" "c19_ajldka_glue_catalog_database_lmnh_plants" {
-  name = "c19-ajldka-lmnh-plants-db"
-}
-
-resource "aws_glue_crawler" "c19_ajldka_glue_crawler_lmnh_plants" {
-  database_name = aws_glue_catalog_database.c19_ajldka_glue_catalog_database_lmnh_plants.name
-  schedule      = "cron(5 0 * * ? *)"
-  name          = "c19-ajldka-lmnh-plants-db"
-  role          = aws_iam_role.c19_ajldka_glue_role_lmnh_plants.arn
-
-  s3_target {
-    path = "s3://${aws_s3_bucket.c19_ajldka_s3_lmnh_plants.bucket}"
-  }
-}
-
+# short-term etl iam role for lambda service
 data "aws_iam_policy_document" "assume_role" {
   statement {
     effect = "Allow"
@@ -85,16 +19,19 @@ data "aws_iam_policy_document" "assume_role" {
   }
 }
 
+# short-term etl iam role for lambda 
 resource "aws_iam_role" "c19_ajldka_lambda_rds_etl_role_lmnh_plants" {
   name               = "c19-ajldka-lambda-rds-etl-role-lmnh-plants"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
+# short-term etl iam role for lambda policies
 resource "aws_iam_role_policy_attachment" "c19_ajldka_rds_etl_role_attach_lmnh_plants" {
   role       = aws_iam_role.c19_ajldka_lambda_rds_etl_role_lmnh_plants.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
+# short-term etl lambda function
 resource "aws_lambda_function" "c19_ajldka_lambda_function_lmnh_plants_rds_etl" {
   function_name = "c19-ajldka-lambda-rds-etl"
   role = aws_iam_role.c19_ajldka_lambda_rds_etl_role_lmnh_plants.arn
@@ -117,6 +54,7 @@ resource "aws_lambda_function" "c19_ajldka_lambda_function_lmnh_plants_rds_etl" 
   }
 }
 
+# long-term etl iam role for lambda
 resource "aws_iam_role" "c19_ajldka_lambda_s3_etl_role_lmnh_plants" {
   name = "c19-ajldka-lambda-s3-etl-role-lmnh-plants"
 
@@ -134,11 +72,13 @@ resource "aws_iam_role" "c19_ajldka_lambda_s3_etl_role_lmnh_plants" {
   })
 }
 
+# long-term etl iam role for lambda policies
 resource "aws_iam_role_policy_attachment" "c19_ajldka_s3_etl_role_attach_lmnh_plants" {
   role       = aws_iam_role.c19_ajldka_lambda_s3_etl_role_lmnh_plants.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
+# long-term etl lambda function
 resource "aws_lambda_function" "c19_ajldka_lambda_function_lmnh_plants_s3_etl" {
   function_name = "c19-ajldka-lambda-s3-etl"
   role = aws_iam_role.c19_ajldka_lambda_s3_etl_role_lmnh_plants.arn
@@ -158,18 +98,5 @@ resource "aws_lambda_function" "c19_ajldka_lambda_function_lmnh_plants_s3_etl" {
       DB_DRIVER=var.DB_DRIVER
       DB_SCHEMA=var.DB_SCHEMA
     }
-  }
-}
-
-# s3 bucket for terraform backend
-resource "aws_s3_bucket" "c19_ajldka_terraform_state" {
-  bucket        = "c19-ajldka-terraform-state"
-  force_destroy = false
-}
-
-resource "aws_s3_bucket_versioning" "terraform_state_versioning" {
-  bucket = aws_s3_bucket.c19_ajldka_terraform_state.id 
-  versioning_configuration {
-    status = "Disabled"
   }
 }
