@@ -19,7 +19,7 @@ def start_s3_session() -> boto3.Session:
 
 
 @st.cache_data
-def retrieve_all_truck_data(database: str, _session: boto3.Session) -> pd.DataFrame:
+def retrieve_all_summary_truck_data(database: str, _session: boto3.Session) -> pd.DataFrame:
     """Retrieve all of the truck data."""
 
     query = """
@@ -32,3 +32,37 @@ def retrieve_all_truck_data(database: str, _session: boto3.Session) -> pd.DataFr
         query,
         database=database,
         boto3_session=_session)
+
+
+@st.cache_data
+def retrieve_all_live_truck_data(con) -> list[dict]:
+    """Extract all relevant (dropping unnecessary ids) plant data from the RDS."""
+
+    with con.cursor() as cur:
+        query = """
+                SELECT 
+                    delta.plant.plant_id,
+                    delta.species.species_name,
+                    delta.country.country_name,
+                    delta.city.city_name,
+                    delta.reading.temperature,
+                    delta.reading.soil_moisture,
+                    delta.reading.last_watered,
+                    delta.reading.recording_taken,
+                    delta.botanist.botanist_name,
+                    delta.botanist.botanist_email
+                FROM delta.plant
+                JOIN delta.species ON delta.plant.species_id = delta.species.species_id
+                JOIN delta.country ON delta.plant.country_id = delta.country.country_id
+                JOIN delta.city ON delta.plant.city_id = delta.city.city_id
+                JOIN delta.reading ON delta.plant.plant_id = delta.reading.plant_id
+                JOIN delta.botanist ON delta.plant.botanist_id = delta.botanist.botanist_id
+                ;
+                """
+        cur.execute(query)
+        desc = cur.description
+        column_names = [col[0] for col in desc]
+        data = [dict(zip(column_names, row))
+                for row in cur.fetchall()]
+
+    return data
