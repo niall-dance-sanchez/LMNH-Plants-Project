@@ -207,6 +207,23 @@ resource "aws_iam_role_policy_attachment" "c19_ajldka_task_execution_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
+resource "aws_iam_role_policy_attachment" "c19_ajldka_ecs_athena" {
+  role       = aws_iam_role.c19_ajldka_task_execution_role.id
+  policy_arn = "arn:aws:iam::aws:policy/AmazonAthenaFullAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "c19_ajldka_ecs_rds" {
+  role       = aws_iam_role.c19_ajldka_task_execution_role.id
+  policy_arn = "arn:aws:iam::aws:policy/AmazonRDSFullAccess"
+}
+
+
+resource "aws_iam_role_policy_attachment" "c19_ajldka_ecs_rds" {
+  role       = aws_iam_role.c19_ajldka_task_execution_role.id
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonDMSCloudWatchLogsRole"
+}
+
+
 # ecs task definition
 resource "aws_ecs_task_definition" "c19_ajldka_ecs_plants_task_definition" {
   family                   = "c19_ajldka_ecs_plants_task_definition"
@@ -215,7 +232,6 @@ resource "aws_ecs_task_definition" "c19_ajldka_ecs_plants_task_definition" {
   cpu                      = 256
   memory                   = 512
   execution_role_arn = aws_iam_role.c19_ajldka_task_execution_role.arn
-  task_role_arn = aws_iam_role.c19_ajldka_ecs_task_role.arn
   container_definitions = jsonencode([{
         name      = "c19-ajldka-plants-dashboard"
         image     = "129033205317.dkr.ecr.eu-west-2.amazonaws.com/c19-ajldka-lmnh-plants-dashboard:latest"
