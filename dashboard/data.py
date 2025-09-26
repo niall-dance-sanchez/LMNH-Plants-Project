@@ -31,8 +31,8 @@ def get_db_connection():
 
 
 @st.cache_data
-def retrieve_all_summary_truck_data(database: str, _session: boto3.Session) -> pd.DataFrame:
-    """Retrieve all of the truck data."""
+def retrieve_all_summary_plant_data(database: str, _session: boto3.Session) -> pd.DataFrame:
+    """Retrieve all of the plant data."""
 
     query = """
             SELECT *
@@ -47,7 +47,7 @@ def retrieve_all_summary_truck_data(database: str, _session: boto3.Session) -> p
 
 
 @st.cache_data
-def retrieve_all_live_truck_data(con) -> list[dict]:
+def retrieve_all_live_plant_data(con) -> list[dict]:
     """Extract all relevant (dropping unnecessary ids) plant data from the RDS."""
 
     with con.cursor() as cur:
