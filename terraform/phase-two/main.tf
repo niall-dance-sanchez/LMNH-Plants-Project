@@ -36,7 +36,7 @@ resource "aws_lambda_function" "c19_ajldka_lambda_function_lmnh_plants_rds_etl" 
   function_name = "c19-ajldka-lambda-rds-etl"
   role = aws_iam_role.c19_ajldka_lambda_rds_etl_role_lmnh_plants.arn
   package_type = "Image"
-  image_uri = "${aws_ecr_repository.c19_ajldka_ecr_lmnh_plants.repository_url}:latest" 
+  image_uri = "129033205317.dkr.ecr.eu-west-2.amazonaws.com/c19-ajldka-lmnh-plants:latest" 
   timeout = 300
   memory_size = 1024
   environment {
@@ -83,7 +83,7 @@ resource "aws_lambda_function" "c19_ajldka_lambda_function_lmnh_plants_s3_etl" {
   function_name = "c19-ajldka-lambda-s3-etl"
   role = aws_iam_role.c19_ajldka_lambda_s3_etl_role_lmnh_plants.arn
   package_type = "Image"
-  image_uri = "${aws_ecr_repository.c19_ajldka_ecr_lmnh_plants_s3.repository_url}:latest" 
+  image_uri = "129033205317.dkr.ecr.eu-west-2.amazonaws.com/c19-ajldka-lmnh-plants-s3:latest" 
   timeout = 300
   memory_size = 1024
   environment {
