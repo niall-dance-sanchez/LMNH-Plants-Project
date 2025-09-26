@@ -81,9 +81,9 @@ def clean_last_watered(data) -> datetime:
 def clean_soil_moisture(data) -> float:
     """Clean soil moisture."""
     if not isinstance(data["soil_moisture"], float):
-        raise ValueError("Invalid soil moisture value")
+        raise ValueError("Invalid soil moisture type")
 
-    if not (0 <= data["soil_moisture"] <= 100):
+    if not 0 <= data["soil_moisture"] <= 100:
         raise ValueError("Invalid soil moisture value")
 
     return data["soil_moisture"]

@@ -111,3 +111,24 @@ def test_clean_botanist_bad_email_type(raw_data):
     with pytest.raises(ValueError) as exc_info:
         clean_botanist(bad_data)
         assert "Invalid botanist email value" in exc_info.value
+
+
+def test_clean_soil_moisture_correct_type(raw_data):
+    soil_moisture = clean_soil_moisture(raw_data)
+    assert soil_moisture == raw_data["soil_moisture"]
+
+
+def test_clean_soil_moisture_bad_moisture_type(raw_data):
+    bad_data = raw_data
+    bad_data["soil_moisture"] = True
+    with pytest.raises(ValueError) as exc_info:
+        clean_soil_moisture(bad_data)
+        assert "Invalid soil moisture type" in exc_info.value
+
+
+def test_clean_soil_moisture_bad_moisture_value(raw_data):
+    bad_data = raw_data
+    bad_data["soil_moisture"] = 102.2
+    with pytest.raises(ValueError) as exc_info:
+        clean_soil_moisture(bad_data)
+        assert "Invalid soil moisture value" in exc_info.value
