@@ -124,28 +124,3 @@ def clean_data(data: list[dict]) -> list[dict]:
         except ValueError as e:
             print(f"Record dropped because: {e}.")
     return cleaned_data
-
-
-if __name__ == "__main__":
-    example_data = {
-        "plant_id": 8,
-        "name": "Bird of paradise",
-        "temperature": 16.3483444707664,
-        "origin_location": {
-            "latitude": 54.1635,
-            "longitude": 8.6662,
-            "city": "Edwardfurt",
-            "country": "Liberia"
-        },
-        "botanist": {
-            "name": "Bradford Mitchell DVM",
-            "email": "bradford.mitchell.dvm@lnhm.co.uk",
-            "phone": "(230) 859-2277 x3537"
-        },
-        "last_watered": "2025-09-22T13:33:20.000Z",
-        "soil_moisture": 31.7511122641509,
-        "recording_taken": "2025-09-23T09:39:03.821Z",
-        "scientific_name": [
-            "Heliconia schiedeana 'Fire and Ice'"
-        ]
-    }
