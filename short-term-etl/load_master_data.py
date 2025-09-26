@@ -188,14 +188,23 @@ def return_plant_ids_in_rds(conn: pyodbc.Connection) -> list[int]:
     return plant_ids
 
 
-def load_master_data(conn: pyodbc.Connection, data: list[dict]):
+def is_new_master_data(data: list[dict], all_plant_ids: list[int]) -> list[dict] | None:
+    """
+    Checks if there's new master data to be inserted. If so, returns only the
+    records with new master data, otherwise returns None.
+    """
+    new_data = list(filter(lambda r: r["plant_id"] not in all_plant_ids, data))
+    if len(new_data) == 0:
+        # No new master data
+        return None
+    return new_data
+
+
+def load_master_data(conn: pyodbc.Connection, data: list[dict]) -> None:
     """Loads all master data from the records passed in from the transform stage."""
     all_rds_plant_ids = return_plant_ids_in_rds(conn)
-    data = list(filter(lambda r: r["plant_id"] not in all_rds_plant_ids, data))
+    data = is_new_master_data(data, all_rds_plant_ids)
 
-    if len(data) == 0:
-        # No new master data
-        return
-
-    for record in data:
-        single_load(conn, data=record)
+    if data:
+        for record in data:
+            single_load(conn, data=record)
