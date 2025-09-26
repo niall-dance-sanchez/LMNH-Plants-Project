@@ -100,3 +100,86 @@ resource "aws_lambda_function" "c19_ajldka_lambda_function_lmnh_plants_s3_etl" {
     }
   }
 }
+
+# eventbridge iam role for short-term etl 
+resource "aws_iam_role" "c19_ajldka_short_term_etl_scheduler_role" {
+  name = "c19-ajldka-short-term-etl-scheduler-role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "scheduler.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+# eventbridge iam policy for short-term etl 
+resource "aws_iam_role_policy_attachment" "c19_ajldka_short_term_etl_scheduler_role_attach" {
+  role       = aws_iam_role.c19_ajldka_short_term_etl_scheduler_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaRole"
+}
+
+# eventbridge scheduler for short-term etl
+resource "aws_scheduler_schedule" "c19_ajldka_short_term_etl_scheduler" {
+  name        = "c19-ajldka-short-term-etl-scheduler"
+  description = "Run short-term ETL job every minute."
+
+  flexible_time_window {
+    mode = "OFF"
+  }
+
+  schedule_expression          = "cron(* * * * ? *)"
+  schedule_expression_timezone = "UTC"
+
+  target {
+    arn      = aws_lambda_function.c19_ajldka_lambda_function_lmnh_plants_rds_etl.arn
+    role_arn = aws_iam_role.c19_ajldka_short_term_etl_scheduler_role.arn
+  }
+}
+
+############################
+# eventbridge iam role for long-term etl
+resource "aws_iam_role" "c19_ajldka_long_term_etl_scheduler_role" {
+  name = "c19-ajldka-long-term-etl-scheduler-role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "scheduler.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+# eventbridge iam policy for long-term etl 
+resource "aws_iam_role_policy_attachment" "c19_ajldka_long_term_etl_scheduler_role_attach" {
+  role       = aws_iam_role.c19_ajldka_long_term_etl_scheduler_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaRole"
+}
+
+# eventbridge scheduler for long-term etl
+resource "aws_scheduler_schedule" "c19_ajldka_long_term_etl_scheduler" {
+  name        = "c19-ajldka-long-term-etl-scheduler"
+  description = "Run long-term ETL job every day at midnight."
+
+  flexible_time_window {
+    mode = "OFF"
+  }
+
+  schedule_expression          = "cron(0 0 * * ? *)"
+  schedule_expression_timezone = "UTC"
+
+  target {
+    arn      = aws_lambda_function.c19_ajldka_lambda_function_lmnh_plants_s3_etl.arn 
+    role_arn = aws_iam_role.c19_ajldka_long_term_etl_scheduler_role.arn 
+  }
+}
