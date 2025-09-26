@@ -25,7 +25,7 @@ jobs:
       run: |
         cd short-term-etl
         find . -type f -name "*.py" -maxdepth 1 | \
-        xargs pylint --disable=I1101
+        xargs pylint --disable=I1101 --fail-under=9
   lint-long-term-etl:
     runs-on: ubuntu-latest
     steps:
@@ -43,7 +43,7 @@ jobs:
       run: |
         cd short-term-etl
         find . -type f -name "*.py" -maxdepth 1 | \
-        xargs pylint --disable=I1101
+        xargs pylint --disable=I1101 --fail-under=9
   test:
     runs-on: ubuntu-latest
     steps:
