@@ -134,7 +134,7 @@ resource "aws_scheduler_schedule" "c19_ajldka_short_term_etl_scheduler" {
   }
 
   schedule_expression          = "cron(* * * * ? *)"
-  schedule_expression_timezone = "UTC"
+  schedule_expression_timezone = "Europe/London"
 
   target {
     arn      = aws_lambda_function.c19_ajldka_lambda_function_lmnh_plants_rds_etl.arn
@@ -176,7 +176,7 @@ resource "aws_scheduler_schedule" "c19_ajldka_long_term_etl_scheduler" {
   }
 
   schedule_expression          = "cron(0 0 * * ? *)"
-  schedule_expression_timezone = "UTC"
+  schedule_expression_timezone = "Europe/London"
 
   target {
     arn      = aws_lambda_function.c19_ajldka_lambda_function_lmnh_plants_s3_etl.arn 
