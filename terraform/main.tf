@@ -123,7 +123,7 @@ resource "aws_iam_role" "c19_ajldka_lambda_s3_etl_role_lmnh_plants" {
         Action = "sts:AssumeRole"
         Effect = "Allow"
         Principal = {
-          Service = "glue.amazonaws.com"
+          Service = "lambda.amazonaws.com"
         }
       }
     ]
