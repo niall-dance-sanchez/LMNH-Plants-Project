@@ -19,7 +19,7 @@ def start_s3_session() -> boto3.Session:
 
 
 @st.cache_data
-def retrieve_all_summary_truck_data(database: str, _session: boto3.Session) -> pd.DataFrame:
+def retrieve_all_summary_plant_data(database: str, _session: boto3.Session) -> pd.DataFrame:
     """Retrieve all of the truck data."""
 
     query = """
